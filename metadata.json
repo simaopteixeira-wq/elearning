@@ -1,0 +1,8 @@
+{
+  "name": "Copy of Mestria Digital - E-Learning",
+  "description": "Uma plataforma de e-learning moderna com gestão de cursos e geração de conteúdos assistida por IA.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

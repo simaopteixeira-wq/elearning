@@ -246,7 +246,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   <Info size={14} className="text-slate-600 group-hover:text-indigo-400" />
                 </button>
                 <div className="text-[11px] text-slate-500 space-y-3 leading-relaxed">
-                  <p>1. No GitHub, vá a <b>Settings</b> > <b>Developer Settings</b>.</p>
+                  <p>1. No GitHub, vá a <b>Settings</b> &gt; <b>Developer Settings</b>.</p>
                   <p>2. Escolha <b>Personal Access Tokens (classic)</b>.</p>
                   <p>3. Gere um token com a permissão <b>'repo'</b>.</p>
                   <a href="https://github.com/settings/tokens" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-indigo-400 hover:underline font-bold">

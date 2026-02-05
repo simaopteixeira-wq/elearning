@@ -2,7 +2,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
 // Initialize the Gemini API client using the API key exclusively from environment variables.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+
+if (!apiKey || apiKey === 'your_api_key_here') {
+  console.warn("Aviso: GEMINI_API_KEY não configurada no ficheiro .env.local");
+}
+
+const ai = new GoogleGenAI({ apiKey: apiKey || 'dummy_key' });
 
 export const generateCourseOutline = async (topic: string) => {
   // Directly call generateContent with the model name and contents.

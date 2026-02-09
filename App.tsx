@@ -16,6 +16,30 @@ const App: React.FC = () => {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
+  const sendEvent = (eventType: string, data: any) => {
+    if (window.parent !== window) {
+      window.parent.postMessage({
+        type: eventType,
+        course: 'mestria-digital',
+        data
+      }, '*');
+    }
+  };
+
+  useEffect(() => {
+    // Question spots
+    document.querySelectorAll('.question-spot').forEach(spot => {
+      spot.addEventListener('click', () => sendEvent('questionClick', { id: (spot as HTMLElement).dataset.id }));
+    });
+
+    // Video (adapta teu video ref)
+    const video = document.querySelector('video');
+    if (video) {
+      video.addEventListener('play', () => sendEvent('videoPlay', {}));
+      video.addEventListener('timeupdate', () => sendEvent('videoTime', { current: video.currentTime }));
+    }
+  }, []);
+
   useEffect(() => {
     // Restaurar sessão local
     const savedUser = localStorage.getItem('mestria_user');
@@ -140,6 +164,7 @@ const App: React.FC = () => {
                 localStorage.setItem('mestria_courses', JSON.stringify(newCourses));
                 setSelectedCourse(updated);
               }}
+              sendEvent={sendEvent}
             />
           )}
           {currentView === 'admin' && (

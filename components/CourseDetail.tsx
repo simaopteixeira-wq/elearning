@@ -22,10 +22,19 @@ interface CourseDetailProps {
   course: Course;
   onBack: () => void;
   onUpdateCourse: (course: Course) => void;
+  sendEvent: (eventType: string, data: any) => void;
 }
 
-const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCourse }) => {
+const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCourse, sendEvent }) => {
   const [selectedLesson, setSelectedLesson] = useState<Lesson>(course.lessons[0]);
+
+  React.useEffect(() => {
+    sendEvent('lessonChange', { 
+      courseId: course.id, 
+      lessonId: selectedLesson.id,
+      lessonTitle: selectedLesson.title 
+    });
+  }, [selectedLesson.id, course.id]);
   const [showCertificate, setShowCertificate] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
 

@@ -12,14 +12,30 @@ describe('Navbar Component', () => {
   };
 
   it('renders user name and role', () => {
-    render(<Navbar user={mockUser} />);
+    render(
+      <Navbar 
+        user={mockUser} 
+        currentView="dashboard" 
+        setView={() => {}} 
+        onLogout={() => {}} 
+        isAdmin={false} 
+      />
+    );
     
     expect(screen.getByText('John Doe')).toBeInTheDocument();
     expect(screen.getByText('student')).toBeInTheDocument();
   });
 
   it('renders user avatar', () => {
-    render(<Navbar user={mockUser} />);
+    render(
+      <Navbar 
+        user={mockUser} 
+        currentView="dashboard" 
+        setView={() => {}} 
+        onLogout={() => {}} 
+        isAdmin={false} 
+      />
+    );
     
     const avatar = screen.getByAltText('John Doe');
     expect(avatar).toBeInTheDocument();

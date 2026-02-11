@@ -29,6 +29,17 @@ class TrainingApp {
         if (typeof removeLoadingOverlay === 'function') {
             removeLoadingOverlay();
         }
+
+        // Parse module from URL if present
+        const urlParams = new URLSearchParams(window.location.search);
+        const moduleParam = urlParams.get('module');
+        if (moduleParam !== null) {
+            const modIndex = parseInt(moduleParam) - 1;
+            if (modIndex >= 0 && modIndex < this.data.modules.length) {
+                this.currentModuleIndex = modIndex;
+            }
+        }
+
         this.showMainApp();
         this.loadModule(this.currentModuleIndex, this.slideIndex);
         this.setupEventListeners();
@@ -248,7 +259,7 @@ class TrainingApp {
                         <div class="hotspot dynamics-hotspot" style="top: 35%; left: 40%;" data-info="Zona de Compressão: Aumento progressivo da pressão e temperatura. Homogeneização da massa em andamento.">?</div>
                         <div class="hotspot dynamics-hotspot" style="top: 50%; left: 55%;" data-info="Zona de Cozimento: Temperatura máxima (120-180°C). Gelatinização do amido e desenvolvimento de características organolépticas.">?</div>
                         <div class="hotspot dynamics-hotspot" style="top: 65%; left: 70%;" data-info="Zona de Expulsão (Die): Queda abrupta de pressão. Expansão violenta e instantânea pela libertação de vapor.">?</div>
-                        <div class="hotspot dynamics-hotspot" style="top: 80%; left: 85%;" data-info="Produto Final: Estrutura celular expandida com ar encapsulado. Textura crocante e densidade controlada.">?</div>
+                        <div class="hotspot dynamics-hotspot" style="top: 80%; left: 82%;" data-info="Produto Final: Estrutura celular expandida com ar encapsulado. Textura crocante e densidade controlada.">?</div>
                     </div>
                     <div id="dynPopup" class="sim-popup dynamics-popup" style="display: none;">
                         <div class="popup-content">
@@ -341,7 +352,7 @@ class TrainingApp {
                         <div class="hotspot" style="top: 10%; left: 32%;" data-info="Alimentação e Mistura: Entrada de farinhas (~10% H2O) e líquidos (Água, Óleo).">?</div>
                         <div class="hotspot" style="top: 42%; left: 45%;" data-info="Tratamento Térmico e Pressão: A massa é cozida entre 120-180°C sob alta pressão (100-150 bars).">?</div>
                         <div class="hotspot" style="top: 62%; left: 58%;" data-info="Expansão Final: A queda abrupta de pressão na saída causa a expansão instantânea e libertação de vapor.">?</div>
-                        <div class="hotspot" style="top: 85%; left: 88%;" data-info="Estrutura do Produto (Células de Ar): Representação da estrutura final expandida, onde o ar fica encapsulado criando a textura crocante.">?</div>
+                        <div class="hotspot" style="top: 85%; left: 82%;" data-info="Estrutura do Produto (Células de Ar): Representação da estrutura final expandida, onde o ar fica encapsulado criando a textura crocante.">?</div>
                     </div>
                     <div id="simPopup" class="sim-popup" style="display: none;">
                         <div class="popup-content">

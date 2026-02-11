@@ -27,6 +27,20 @@ interface CourseDetailProps {
 
 const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCourse, sendEvent }) => {
   const [selectedLesson, setSelectedLesson] = useState<Lesson>(course.lessons[0]);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  // Sincronizar lição selecionada quando o curso atualiza (ex: após marcar como concluída)
+  React.useEffect(() => {
+    const freshLesson = course.lessons.find(l => l.id === selectedLesson.id);
+    if (freshLesson && freshLesson !== selectedLesson) {
+      setSelectedLesson(freshLesson);
+    }
+  }, [course.lessons, selectedLesson.id]);
+
+  // Resetar overlay de sucesso ao mudar de lição
+  React.useEffect(() => {
+    setShowSuccess(false);
+  }, [selectedLesson.id]);
 
   React.useEffect(() => {
     sendEvent('lessonChange', { 
@@ -39,6 +53,9 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
   const [hoverRating, setHoverRating] = useState(0);
 
   const toggleLessonComplete = (lessonId: string) => {
+    const lessonToToggle = course.lessons.find(l => l.id === lessonId);
+    const isBecomingComplete = lessonToToggle ? !lessonToToggle.completed : false;
+
     const updatedLessons = course.lessons.map(l => 
       l.id === lessonId ? { ...l, completed: !l.completed } : l
     );
@@ -55,7 +72,12 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
     onUpdateCourse(updatedCourse);
     
     const newSelected = updatedLessons.find(l => l.id === lessonId);
-    if (newSelected) setSelectedLesson(newSelected);
+    if (newSelected) {
+      setSelectedLesson(newSelected);
+      if (isBecomingComplete) {
+        setShowSuccess(true);
+      }
+    }
   };
 
   const rateLesson = (lessonId: string, rating: number) => {
@@ -74,8 +96,9 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
     if (newSelected) setSelectedLesson(newSelected);
   };
 
-  const isLastLesson = course.lessons.indexOf(selectedLesson) === course.lessons.length - 1;
-  const nextLesson = !isLastLesson ? course.lessons[course.lessons.indexOf(selectedLesson) + 1] : null;
+  const currentIndex = course.lessons.findIndex(l => l.id === selectedLesson.id);
+  const isLastLesson = currentIndex === course.lessons.length - 1;
+  const nextLesson = !isLastLesson ? course.lessons[currentIndex + 1] : null;
 
   return (
     <div className="max-w-7xl mx-auto animate-in slide-in-from-bottom-4 duration-500 relative">
@@ -139,10 +162,10 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
         <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Voltar ao Dashboard
       </button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Main Player & Content */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className={`${selectedLesson.type === 'project' ? 'min-h-[600px]' : 'aspect-video'} bg-slate-900 rounded-2xl overflow-hidden relative shadow-2xl flex items-center justify-center group/player`}>
+        <div className="lg:col-span-3 space-y-6">
+          <div className={`w-full ${selectedLesson.type === 'project' ? 'aspect-[16/10] sm:aspect-video lg:h-[700px]' : 'aspect-video'} bg-slate-900 rounded-2xl overflow-hidden relative shadow-2xl flex items-center justify-center group/player`}>
             <img 
               src={course.thumbnail} 
               alt="Video Preview" 
@@ -151,7 +174,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
               }`}
             />
             
-            {selectedLesson.completed && (
+            {showSuccess && selectedLesson.completed && (
               <div className="absolute inset-0 bg-teal-900/40 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center text-white text-center p-6 animate-in fade-in zoom-in duration-300">
                 <div className="bg-white text-teal-600 p-4 rounded-full mb-4 shadow-xl">
                   <CheckCircle size={48} />
@@ -176,12 +199,12 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
               </div>
             )}
 
-            <div className={`relative z-10 w-full flex flex-col items-center gap-4 text-white transition-opacity ${selectedLesson.completed ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`relative z-10 w-full h-full flex flex-col items-center gap-4 text-white transition-opacity ${showSuccess && selectedLesson.completed ? 'opacity-0' : 'opacity-100'}`}>
               {selectedLesson.type === 'project' ? (
                 <iframe
                   src={selectedLesson.externalUrl || '#'}
                   title={selectedLesson.title}
-                  className="w-full h-[600px] rounded-2xl border-0 shadow-inner"
+                  className="w-full h-full rounded-2xl border-0 shadow-inner"
                   allowFullScreen
                 />
               ) : (
@@ -201,8 +224,21 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
 
           <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-800">{selectedLesson.title}</h2>
+              <div className="flex-1">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl font-bold text-slate-800">{selectedLesson.title}</h2>
+                  {selectedLesson.externalUrl && (
+                    <a 
+                      href={selectedLesson.externalUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                      title="Abrir em nova aba"
+                    >
+                      <ExternalLink size={20} />
+                    </a>
+                  )}
+                </div>
                 <div className="flex items-center gap-4 text-sm text-slate-500 mt-1">
                   <span className="flex items-center gap-1"><Clock size={16} /> {selectedLesson.duration}</span>
                   <span className="flex items-center gap-1">
@@ -269,8 +305,8 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
 
             <div className="pt-8 border-t border-slate-100 flex items-center justify-between">
               <button 
-                disabled={course.lessons.indexOf(selectedLesson) === 0}
-                onClick={() => setSelectedLesson(course.lessons[course.lessons.indexOf(selectedLesson) - 1])}
+                disabled={currentIndex === 0}
+                onClick={() => setSelectedLesson(course.lessons[currentIndex - 1])}
                 className="text-slate-400 font-semibold hover:text-slate-600 flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 <ArrowLeft size={18} /> Aula Anterior

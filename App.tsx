@@ -63,7 +63,15 @@ const App: React.FC = () => {
         progress: 0,
         createdAt: new Date().toISOString(),
         lessons: [
-          { id: 'l1', title: 'Introdução ao Processo de Extrusão', content: 'Visão geral histórica e evolução das extrusoras na indústria alimentar.', duration: '15 min', completed: false, type: 'text' },
+          { 
+            id: 'l1', 
+            title: 'Introdução ao Processo de Extrusão', 
+            content: 'Visão geral histórica e evolução das extrusoras na indústria alimentar.', 
+            duration: '15 min', 
+            completed: false, 
+            type: 'project',
+            externalUrl: '/courses/formar-opencode/index.html'
+          },
           { id: 'l2', title: 'Componentes da Extrusora', content: 'Análise detalhada do canhão (barrel), matrizes (dies) e sistemas de corte.', duration: '25 min', completed: false, type: 'text' },
           { id: 'l3', title: 'Termodinâmica e Transferência de Calor', content: 'Cálculo de perfis de temperatura. Zonas de aquecimento e arrefecimento.', duration: '30 min', completed: false, type: 'text' },
           { id: 'l4', title: 'Reologia de Massas Alimentares', content: 'Comportamento de polímeros naturais sob alta pressão e cisalhamento.', duration: '20 min', completed: false, type: 'text' },

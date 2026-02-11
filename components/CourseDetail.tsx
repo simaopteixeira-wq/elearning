@@ -142,11 +142,13 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Player & Content */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="aspect-video bg-slate-900 rounded-2xl overflow-hidden relative shadow-2xl flex items-center justify-center group/player">
+          <div className={`${selectedLesson.type === 'project' ? 'min-h-[600px]' : 'aspect-video'} bg-slate-900 rounded-2xl overflow-hidden relative shadow-2xl flex items-center justify-center group/player`}>
             <img 
               src={course.thumbnail} 
               alt="Video Preview" 
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${selectedLesson.completed ? 'opacity-20' : 'opacity-40'}`}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                selectedLesson.type === 'project' ? 'opacity-0' : (selectedLesson.completed ? 'opacity-20' : 'opacity-40')
+              }`}
             />
             
             {selectedLesson.completed && (
@@ -174,25 +176,14 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
               </div>
             )}
 
-            <div className={`relative z-10 flex flex-col items-center gap-4 text-white transition-opacity ${selectedLesson.completed ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`relative z-10 w-full flex flex-col items-center gap-4 text-white transition-opacity ${selectedLesson.completed ? 'opacity-0' : 'opacity-100'}`}>
               {selectedLesson.type === 'project' ? (
-                <div className="flex flex-col items-center gap-6 p-8 bg-black/40 backdrop-blur-md rounded-[32px] border border-white/10 animate-in zoom-in-95">
-                  <div className="w-20 h-20 bg-emerald-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-emerald-500/20">
-                    <Layers size={40} className="text-white" />
-                  </div>
-                  <div className="text-center space-y-2">
-                    <h3 className="text-2xl font-black">Projeto Interativo</h3>
-                    <p className="text-sm text-slate-300 max-w-xs">Este módulo contém um ambiente de software externo ou laboratório prático.</p>
-                  </div>
-                  <a 
-                    href={selectedLesson.externalUrl || '#'} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="px-8 py-4 bg-white text-slate-900 rounded-2xl font-black flex items-center gap-3 hover:scale-105 transition-all shadow-xl"
-                  >
-                    <ExternalLink size={20} /> ABRIR AMBIENTE DE TRABALHO
-                  </a>
-                </div>
+                <iframe
+                  src={selectedLesson.externalUrl || '#'}
+                  title={selectedLesson.title}
+                  className="w-full h-[600px] rounded-2xl border-0 shadow-inner"
+                  allowFullScreen
+                />
               ) : (
                 <button className="w-20 h-20 bg-indigo-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-xl shadow-indigo-500/30">
                   <Play size={40} fill="white" className="ml-1" />

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700">
+  <defs>
+    <style>
+      .component { fill: #CCCCCC; stroke: #333333; stroke-width: 2; }
+      .container { fill: #E8E8E8; stroke: #666666; stroke-width: 2; }
+      .shaft { fill: #666666; stroke: #333333; stroke-width: 1; }
+      .pipe { fill: none; stroke: #333333; stroke-width: 2; }
+      .valve { fill: #888888; stroke: #333333; stroke-width: 1.5; }
+      .label { font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; fill: #000000; }
+      .small-label { font-family: Arial, sans-serif; font-size: 11px; fill: #333333; }
+    </style>
+  </defs>
+
+  <!-- Fundo -->
+  <rect width="1000" height="700" fill="#FFFFFF" stroke="#DDDDDD" stroke-width="1"/>
+
+  <!-- ===== HOPPER / ALIMENTADOR (Slurry feeding) ===== -->
+  <!-- Funil/Cone do hopper -->
+  <polygon points="120,80 220,80 240,160 100,160" class="container"/>
+  <text x="170" y="130" class="label" text-anchor="middle">Alimentação de Farinha</text>
+  
+  <!-- Base do hopper -->
+  <rect x="110" y="160" width="120" height="20" class="component"/>
+  
+  <!-- Dosador/Vibrante -->
+  <circle cx="170" cy="190" r="15" class="component"/>
+  <text x="170" y="220" class="small-label" text-anchor="middle">Dosador</text>
+
+  <!-- PRÉ-CONDICIONADOR (Preconditioning) ===== -->
+  <!-- Cilindro do pré-condicionador -->
+  <rect x="280" y="100" width="180" height="70" class="component" rx="35"/>
+  <text x="370" y="145" class="label" text-anchor="middle">Pré-condicionador</text>
+  
+  <!-- Rosca dentro -->
+  <line x1="300" y1="135" x2="440" y2="135" class="shaft" stroke-width="3"/>
+  
+  <!-- Tubagem de entrada (vapor/água) -->
+  <path d="M 330 100 L 330 60" class="pipe"/>
+  <rect x="315" y="55" width="30" height="15" class="valve" rx="3"/>
+  <text x="330" y="45" class="small-label" text-anchor="middle">Vapor</text>
+
+  <!-- ===== EXTRUSOR PRINCIPAL (Extruder - Dupla Rosca) ===== -->
+  <!-- Barril principal (corpo cilíndrico) -->
+  <rect x="320" y="230" width="350" height="100" class="component" rx="50"/>
+  <text x="495" y="290" class="label" text-anchor="middle">Extrusor de Dupla Rosca</text>
+  
+  <!-- Jaquetas de temperatura -->
+  <line x1="340" y1="215" x2="640" y2="215" class="pipe" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="340" y1="350" x2="640" y2="350" class="pipe" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="660" y="220" class="small-label">Aquecimento/Arrefecimento</text>
+  
+  <!-- Roscas (representação) -->
+  <line x1="345" y1="270" x2="630" y2="270" class="shaft" stroke-width="4"/>
+  <line x1="345" y1="300" x2="630" y2="300" class="shaft" stroke-width="4"/>
+
+  <!-- Injeção de água durante processo -->
+  <path d="M 400 230 L 400 190" class="pipe"/>
+  <rect x="390" y="180" width="20" height="15" class="valve" rx="2"/>
+  <text x="415" y="190" class="small-label">Adição de Água</text>
+
+  <!-- Ventilação (vents) -->
+  <circle cx="450" cy="215" r="8" class="valve"/>
+  <circle cx="510" cy="215" r="8" class="valve"/>
+  <line x1="450" y1="205" x2="450" y2="180" class="pipe"/>
+  <line x1="510" y1="205" x2="510" y2="180" class="pipe"/>
+  <text x="465" y="165" class="small-label">Ventilação</text>
+
+  <!-- ===== CABEÇA DE EXTRUSÃO / DIE ===== -->
+  <!-- Cabeça cónica -->
+  <polygon points="670,250 730,280 670,310 610,280" class="component"/>
+  <text x="670" y="285" class="small-label" text-anchor="middle">Matriz</text>
+
+  <!-- ===== CORTADOR (Cutter) ===== -->
+  <!-- Lâminas do cortador -->
+  <circle cx="800" cy="280" r="25" class="component"/>
+  <text x="800" y="295" class="small-label" text-anchor="middle">Cutter</text>
+  
+  <!-- Eixo do cortador -->
+  <line x1="730" y1="280" x2="770" y2="280" class="shaft" stroke-width="3"/>
+  <line x1="830" y1="280" x2="860" y2="280" class="shaft" stroke-width="2"/>
+
+  <!-- Motor do cortador -->
+  <rect x="850" y="255" width="30" height="50" class="component"/>
+  <text x="865" y="295" class="small-label" text-anchor="middle">Motor</text>
+
+  <!-- ===== PRODUTO À SAÍDA ===== -->
+  <!-- Saída do produto -->
+  <path d="M 860 280 L 920 280" class="pipe"/>
+  <circle cx="940" cy="280" r="15" class="component"/>
+  <text x="940" y="290" class="small-label" text-anchor="middle">Saída</text>
+
+  <!-- ===== RECOLHA INFERIOR ===== -->
+  <!-- Bomba de vácuo -->
+  <rect x="320" y="400" width="60" height="50" class="component" rx="5"/>
+  <text x="350" y="432" class="small-label" text-anchor="middle">Bomba de</text>
+  <text x="350" y="445" class="small-label" text-anchor="middle">Vácuo</text>
+  
+  <!-- Tubagem de vácuo -->
+  <path d="M 350 350 L 350 400" class="pipe"/>
+
+  <!-- Armadilha de sólidos (Solids trap) -->
+  <polygon points="480,360 520,360 530,450 470,450" class="container"/>
+  <text x="500" y="410" class="small-label" text-anchor="middle">Armadilha</text>
+  <text x="500" y="425" class="small-label" text-anchor="middle">Sólidos</text>
+
+  <!-- Coletor de produto -->
+  <ellipse cx="700" cy="470" rx="80" ry="40" class="container"/>
+  <text x="700" y="475" class="label" text-anchor="middle">Produto Final</text>
+
+  <!-- ===== ENTRADA DE PASTA (Slurry feeding) - Alternativa ===== -->
+  <!-- Cilindro de alimentação de pasta -->
+  <rect x="80" y="300" width="100" height="80" class="container" rx="8"/>
+  <text x="130" y="330" class="small-label" text-anchor="middle">Alimentação</text>
+  <text x="130" y="345" class="small-label" text-anchor="middle">Pasta</text>
+  
+  <!-- Bomba de pasta -->
+  <circle cx="130" cy="395" r="12" class="component"/>
+  <text x="130" y="420" class="small-label" text-anchor="middle">Bomba</text>
+  
+  <!-- Tubagem de pasta -->
+  <path d="M 180 340 L 280 290" class="pipe" stroke-width="3"/>
+
+  <!-- Adição de Líquido -->
+  <circle cx="480" cy="520" r="20" class="container"/>
+  <text x="480" y="515" class="small-label" text-anchor="middle">Adição</text>
+  <text x="480" y="530" class="small-label" text-anchor="middle">Líquido</text>
+  
+  <!-- Tubagem de líquido -->
+  <path d="M 480 500 L 480 450" class="pipe" stroke-width="2"/>
+
+  <!-- ===== FLUXO DE MATERIAL ===== -->
+  <!-- Seta indicando fluxo -->
+  <path d="M 250 135 L 280 135" class="pipe" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 460 280 L 610 280" class="pipe" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- Legenda -->
+  <text x="50" y="650" class="label" font-size="11px">Fluxo de Material: Meal Infeed → Preconditioning → Twin Screw Extruder → Die → Cutter → Produto Final</text>
+</svg>

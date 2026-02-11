@@ -248,7 +248,7 @@ class TrainingApp {
             stage.innerHTML = `
                 <div class="dynamics-m1-interactive">
                     <video class="dynamics-video" autoplay loop>
-                        <source src="assets/PixVerse_V5.5_Extend_360P_Mais_lento_e_durante.mp4" type="video/mp4">
+                        <source src="assets/PixVerse_V5.5_Extend_360P_Mais_lento_e_durante1.mp4" type="video/mp4">
                         Seu navegador não suporta vídeo HTML5.
                         <img src="assets/extruder_clean.png" class="fallback-image" alt="Diagrama Técnico Extrusora">
                     </video>

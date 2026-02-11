@@ -165,7 +165,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Main Player & Content */}
         <div className="lg:col-span-3 space-y-6">
-          <div className={`w-full ${selectedLesson.type === 'project' ? 'aspect-[16/10] sm:aspect-video lg:h-[700px]' : 'aspect-video'} bg-slate-900 rounded-2xl overflow-hidden relative shadow-2xl flex items-center justify-center group/player`}>
+          <div className={`w-full ${selectedLesson.type === 'project' ? 'aspect-[16/10] sm:aspect-video lg:h-[800px]' : 'aspect-video'} bg-slate-900 rounded-2xl overflow-hidden relative shadow-2xl flex items-center justify-center group/player`}>
             <img 
               src={course.thumbnail} 
               alt="Video Preview" 

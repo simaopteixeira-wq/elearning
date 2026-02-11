@@ -207,7 +207,6 @@ class TrainingApp {
             <div class="video-container">
                 <div class="video-header">
                     <h2>📽️ Visualização Técnica: ${module.title}</h2>
-                    <p>Interaja com os pontos destacados para explorar o processo.</p>
                 </div>
                 <div class="simulation-stage" id="simStage"></div>
                 <div class="video-footer">
@@ -227,7 +226,6 @@ class TrainingApp {
             <div class="video-container">
                 <div class="video-header">
                     <h2>🎬 Dinâmica do Processo em Tempo Real</h2>
-                    <p>Visualize a sequência de operações dentro do extrusor. Clique nos pontos para detalhes.</p>
                 </div>
                 <div class="dynamics-stage" id="dynamicsStage"></div>
                 <div class="video-footer">
@@ -255,11 +253,11 @@ class TrainingApp {
                         <img src="assets/extruder_clean.png" class="fallback-image" alt="Diagrama Técnico Extrusora">
                     </video>
                     <div class="hotspots-overlay dynamics-overlay">
-                        <div class="hotspot dynamics-hotspot" style="top: 15%; left: 25%;" data-info="Zona de Alimentação: Entrada de matérias-primas secas e líquidos. Primeira zona de mistura e transporte.">?</div>
-                        <div class="hotspot dynamics-hotspot" style="top: 35%; left: 40%;" data-info="Zona de Compressão: Aumento progressivo da pressão e temperatura. Homogeneização da massa em andamento.">?</div>
-                        <div class="hotspot dynamics-hotspot" style="top: 50%; left: 55%;" data-info="Zona de Cozimento: Temperatura máxima (120-180°C). Gelatinização do amido e desenvolvimento de características organolépticas.">?</div>
-                        <div class="hotspot dynamics-hotspot" style="top: 65%; left: 70%;" data-info="Zona de Expulsão (Die): Queda abrupta de pressão. Expansão violenta e instantânea pela libertação de vapor.">?</div>
-                        <div class="hotspot dynamics-hotspot" style="top: 80%; left: 82%;" data-info="Produto Final: Estrutura celular expandida com ar encapsulado. Textura crocante e densidade controlada.">?</div>
+                        <div class="hotspot dynamics-hotspot" style="top: 10%; left: 20%;" data-info="Zona de Alimentação: Entrada de matérias-primas secas e líquidos. Primeira zona de mistura e transporte.">?</div>
+                        <div class="hotspot dynamics-hotspot" style="top: 48%; left: 30%;" data-info="Zona de Compressão: Aumento progressivo da pressão e temperatura. Homogeneização da massa em andamento.">?</div>
+                        <div class="hotspot dynamics-hotspot" style="top: 48%; left: 45%;" data-info="Zona de Cozimento: Temperatura máxima (120-180°C). Gelatinização do amido e desenvolvimento de características organolépticas.">?</div>
+                        <div class="hotspot dynamics-hotspot" style="top: 48%; left: 80%;" data-info="Zona de Expulsão (Die): Queda abrupta de pressão. Expansão violenta e instantânea pela libertação de vapor.">?</div>
+                        <div class="hotspot dynamics-hotspot" style="top: 68%; left: 90%;" data-info="Produto Final: Estrutura celular expandida com ar encapsulado. Textura crocante e densidade controlada.">?</div>
                     </div>
                     <div id="dynPopup" class="sim-popup dynamics-popup" style="display: none;">
                         <div class="popup-content">

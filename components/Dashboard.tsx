@@ -24,27 +24,32 @@ interface DashboardProps {
   filterByProgress?: boolean;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ courses, onSelectCourse, onAddCourse, filterByProgress }) => {
+const Dashboard: React.FC<DashboardProps> = ({ courses = [], onSelectCourse, onAddCourse, filterByProgress }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [topic, setTopic] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeSearchTerm, setActiveSearchTerm] = useState('');
 
-  // Filtro robusto que utiliza o termo ativo (após pressionar Enter ou clicar na lupa)
-  const displayCourses = courses.filter(c => {
-    const term = activeSearchTerm.toLowerCase();
-    const matchesSearch = 
-      c.title.toLowerCase().includes(term) || 
-      c.category.toLowerCase().includes(term) || 
-      c.instructor.toLowerCase().includes(term);
+  // Filtro em tempo real com proteção contra valores ausentes
+  const displayCourses = (courses || []).filter(c => {
+    if (!c) return false;
     
-    if (filterByProgress) return matchesSearch && c.progress > 0;
+    const term = (searchQuery || '').toLowerCase().trim();
+    const title = (c.title || '').toLowerCase();
+    const category = (c.category || '').toLowerCase();
+    const instructor = (c.instructor || '').toLowerCase();
+    
+    const matchesSearch = 
+      title.includes(term) || 
+      category.includes(term) || 
+      instructor.includes(term);
+    
+    // Se for a vista "Meus Cursos", mostrar apenas se houver progresso
+    if (filterByProgress) return matchesSearch && (c.progress > 0);
     return matchesSearch;
   });
 
   const handleSearchTrigger = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    setActiveSearchTerm(searchQuery);
   };
 
   const totalLessons = courses.reduce((acc, c) => acc + c.lessons.length, 0);
@@ -138,32 +143,29 @@ const Dashboard: React.FC<DashboardProps> = ({ courses, onSelectCourse, onAddCou
 
       {/* Course List */}
       <section className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 gap-4">
-          <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-4 gap-4">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
             {filterByProgress ? 'Continuar Aprendendo' : 'Cursos Disponíveis'}
-            <span className="bg-slate-100 text-slate-500 text-xs py-1 px-2 rounded-full">{displayCourses.length}</span>
+            <span className="bg-white/10 text-slate-300 text-xs py-1 px-2 rounded-full">{displayCourses.length}</span>
           </h2>
           
           <form onSubmit={handleSearchTrigger} className="relative group/search flex items-center gap-2">
             <div className="relative">
-              <button 
-                type="submit"
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors z-10"
-              >
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/search:text-indigo-600 transition-colors z-10">
                 <Search size={16} />
-              </button>
+              </div>
               <input 
                 type="text" 
-                placeholder="Pesquisar e carregar..."
+                placeholder="Pesquisar cursos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-64 transition-all"
+                className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-64 transition-all"
               />
             </div>
-            {activeSearchTerm && (
+            {searchQuery && (
               <button 
                 type="button"
-                onClick={() => { setSearchQuery(''); setActiveSearchTerm(''); }}
+                onClick={() => setSearchQuery('')}
                 className="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors"
               >
                 Limpar
@@ -233,19 +235,19 @@ const Dashboard: React.FC<DashboardProps> = ({ courses, onSelectCourse, onAddCou
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-100 animate-in zoom-in-95">
-            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+          <div className="text-center py-20 bg-white/5 rounded-3xl border-2 border-dashed border-white/10 animate-in zoom-in-95">
+            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
               <Search size={32} />
             </div>
-            <h3 className="text-lg font-bold text-slate-800">
-              Nenhum resultado para "{activeSearchTerm}"
+            <h3 className="text-lg font-bold text-white">
+              Nenhum resultado para "{searchQuery}"
             </h3>
-            <p className="text-slate-500 text-sm mt-1 max-w-sm mx-auto">
+            <p className="text-slate-400 text-sm mt-1 max-w-sm mx-auto">
               Tente pesquisar por palavras-chave diferentes, categorias ou pelo nome do instrutor.
             </p>
             <button 
-              onClick={() => { setSearchQuery(''); setActiveSearchTerm(''); }}
-              className="mt-6 text-indigo-600 font-bold text-sm hover:underline"
+              onClick={() => setSearchQuery('')}
+              className="mt-6 text-indigo-400 font-bold text-sm hover:underline"
             >
               Limpar Pesquisa
             </button>

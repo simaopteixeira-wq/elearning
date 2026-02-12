@@ -340,15 +340,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
           <div className="md:col-span-2">
             <label className="block text-xs font-black text-slate-400 uppercase mb-2">Título do Curso</label>
-            <input type="text" value={courseForm.title} onChange={(e) => setCourseForm({...courseForm, title: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Dê um nome ao curso" />
+            <input type="text" value={courseForm.title} onChange={(e) => setCourseForm({...courseForm, title: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Dê um nome ao curso" />
           </div>
           <div>
             <label className="block text-xs font-black text-slate-400 uppercase mb-2">Categoria</label>
-            <input type="text" value={courseForm.category} onChange={(e) => setCourseForm({...courseForm, category: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none" />
+            <input type="text" value={courseForm.category} onChange={(e) => setCourseForm({...courseForm, category: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 outline-none" />
           </div>
           <div>
             <label className="block text-xs font-black text-slate-400 uppercase mb-2">Instrutor</label>
-            <input type="text" value={courseForm.instructor} onChange={(e) => setCourseForm({...courseForm, instructor: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none" />
+            <input type="text" value={courseForm.instructor} onChange={(e) => setCourseForm({...courseForm, instructor: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 outline-none" />
           </div>
         </div>
 

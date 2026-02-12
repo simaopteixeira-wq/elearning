@@ -82,19 +82,19 @@ const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, onLogout, i
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-2">
           <div className="bg-indigo-600 p-1.5 rounded-lg text-white">
-            <BookOpen size={20} />
+            <BookOpen size={22} />
           </div>
-          <span className="font-bold text-lg text-slate-800">Mestria</span>
+          <span className="font-bold text-xl text-slate-800">Mestria</span>
         </div>
 
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-2">
           {menuItems.map((item) => {
             const isActive = currentView === item.id || (item.id === 'dashboard' && currentView === 'course-detail');
             return (
               <button
                 key={item.id}
                 onClick={() => setView(item.id as AppView)}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg text-base font-medium transition-colors ${
                   isActive 
                     ? 'bg-indigo-50 text-indigo-600' 
                     : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
@@ -109,20 +109,20 @@ const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, onLogout, i
 
       <div className="flex items-center gap-4 relative">
         <div 
-          className="flex items-center gap-3 cursor-pointer group p-1 pr-3 rounded-full hover:bg-slate-50 transition-all"
+          className="flex items-center gap-3 cursor-pointer group p-1 pr-4 rounded-full hover:bg-slate-50 transition-all"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border-2 border-indigo-100 overflow-hidden relative">
+          <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center border-2 border-indigo-100 overflow-hidden relative">
             {isUploading ? (
-              <Loader2 size={20} className="text-indigo-600 animate-spin" />
+              <Loader2 size={24} className="text-indigo-600 animate-spin" />
             ) : user.avatar ? (
               <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
             ) : (
-              <UserIcon size={20} className="text-slate-400" />
+              <UserIcon size={24} className="text-slate-400" />
             )}
           </div>
           <div className="text-left hidden sm:block">
-            <p className="text-sm font-bold text-slate-800 leading-none group-hover:text-indigo-600 transition-colors">{user.name}</p>
+            <p className="text-base font-bold text-slate-800 leading-none group-hover:text-indigo-600 transition-colors">{user.name}</p>
           </div>
         </div>
 

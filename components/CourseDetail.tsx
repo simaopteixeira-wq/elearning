@@ -28,6 +28,8 @@ interface CourseDetailProps {
 const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCourse, sendEvent }) => {
   const [selectedLesson, setSelectedLesson] = useState<Lesson>(course.lessons[0]);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showCertificate, setShowCertificate] = useState(false);
+  const [hoverRating, setHoverRating] = useState(0);
 
   // Sincronizar lição selecionada quando o curso atualiza (ex: após marcar como concluída)
   React.useEffect(() => {
@@ -49,10 +51,8 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
       lessonTitle: selectedLesson.title 
     });
   }, [selectedLesson.id, course.id]);
-  const [showCertificate, setShowCertificate] = useState(false);
-  const [hoverRating, setHoverRating] = useState(0);
 
-  const toggleLessonComplete = (lessonId: string) => {
+  const toggleLessonComplete = React.useCallback((lessonId: string) => {
     const lessonToToggle = course.lessons.find(l => l.id === lessonId);
     const isBecomingComplete = lessonToToggle ? !lessonToToggle.completed : false;
 
@@ -78,7 +78,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
         setShowSuccess(true);
       }
     }
-  };
+  }, [course, onUpdateCourse]);
 
   const rateLesson = (lessonId: string, rating: number) => {
     const updatedLessons = course.lessons.map(l => 
@@ -95,6 +95,33 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
     const newSelected = updatedLessons.find(l => l.id === lessonId);
     if (newSelected) setSelectedLesson(newSelected);
   };
+
+  // Sync with iframe navigation
+  React.useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Safety check for message data
+      if (!event.data || typeof event.data !== 'object') return;
+
+      const { type, moduleIndex, action } = event.data;
+      
+      if (type === 'elearning-navigation') {
+        const targetLesson = course.lessons.find(l => 
+          l.externalUrl?.includes(`module=${moduleIndex}`)
+        );
+
+        if (targetLesson) {
+          if (action === 'loadModule' && targetLesson.id !== selectedLesson.id) {
+            setSelectedLesson(targetLesson);
+          } else if (action === 'moduleCompleted' && !targetLesson.completed) {
+            toggleLessonComplete(targetLesson.id);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [course.lessons, selectedLesson.id, toggleLessonComplete]);
 
   const currentIndex = course.lessons.findIndex(l => l.id === selectedLesson.id);
   const isLastLesson = currentIndex === course.lessons.length - 1;
@@ -175,7 +202,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
             />
             
             {showSuccess && selectedLesson.completed && (
-              <div className="absolute inset-0 bg-teal-900/40 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center text-white text-center p-6 animate-in fade-in zoom-in duration-300">
+              <div className="absolute inset-0 bg-teal-900/40 backdrop-blur-[2px] z-20 flex flex-col items-center justify-center text-white text-center p-6 animate-in fade-in zoom-in duration-300">
                 <div className="bg-white text-teal-600 p-4 rounded-full mb-4 shadow-xl">
                   <CheckCircle size={48} />
                 </div>
@@ -199,7 +226,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
               </div>
             )}
 
-            <div className={`relative z-10 w-full h-full flex flex-col items-center gap-4 text-white transition-opacity ${showSuccess && selectedLesson.completed ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`relative z-10 w-full h-full flex flex-col items-center gap-4 text-white transition-opacity ${showSuccess && selectedLesson.completed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
               {selectedLesson.type === 'project' ? (
                 <iframe
                   src={selectedLesson.externalUrl || '#'}

@@ -94,20 +94,20 @@ const Dashboard: React.FC<DashboardProps> = ({ courses, onSelectCourse, onAddCou
     <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">
+          <h1 className="text-4xl font-black text-white tracking-tight drop-shadow-md">
             {filterByProgress ? 'Meus Cursos' : 'Explorar Aprendizado'}
           </h1>
-          <p className="text-slate-500 mt-1">
+          <p className="text-slate-300 mt-2 font-medium">
             {filterByProgress ? 'Cursos em que você já iniciou o progresso.' : `Você já concluiu ${globalProgress}% da sua trilha total.`}
           </p>
         </div>
         {!filterByProgress && (
           <div className="w-full md:w-64 space-y-2">
-            <div className="flex justify-between text-xs font-bold text-slate-600">
+            <div className="flex justify-between text-xs font-bold text-slate-300">
               <span>Progresso Geral</span>
               <span>{globalProgress}%</span>
             </div>
-            <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden shadow-inner">
+            <div className="h-3 w-full bg-white/10 rounded-full overflow-hidden backdrop-blur-sm border border-white/5">
               <div 
                 className="h-full bg-gradient-to-r from-indigo-500 to-teal-400 transition-all duration-1000 ease-out"
                 style={{ width: `${globalProgress}%` }}
@@ -117,36 +117,7 @@ const Dashboard: React.FC<DashboardProps> = ({ courses, onSelectCourse, onAddCou
         )}
       </header>
 
-      {/* Quick Add Section */}
-      {!filterByProgress && (
-        <section className="bg-white rounded-2xl p-6 shadow-sm border border-indigo-100 flex flex-col md:flex-row items-center gap-4 group">
-          <div className="bg-indigo-50 p-3 rounded-xl text-indigo-600 group-hover:scale-110 transition-transform">
-            <Sparkles size={24} />
-          </div>
-          <div className="flex-1 text-center md:text-left">
-            <h3 className="font-bold text-slate-800">Criação Instantânea com IA</h3>
-            <p className="text-xs text-slate-500">Transforme qualquer ideia num curso completo em segundos.</p>
-          </div>
-          <div className="flex w-full md:w-auto gap-2">
-            <input 
-              type="text" 
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              placeholder="Ex: Gestão de Projetos, Python..."
-              className="flex-1 md:w-64 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
-              onKeyPress={(e) => e.key === 'Enter' && handleQuickCreate()}
-            />
-            <button 
-              onClick={handleQuickCreate}
-              disabled={isGenerating || !topic.trim()}
-              className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-indigo-700 disabled:opacity-50 transition-all flex items-center gap-2"
-            >
-              {isGenerating ? <Loader2 className="animate-spin" size={16} /> : <Plus size={16} />}
-              Criar
-            </button>
-          </div>
-        </section>
-      )}
+      {/* Quick Add Section removed as requested */}
 
       {/* Stats */}
       {!filterByProgress && (

@@ -58,11 +58,6 @@ class TrainingApp {
                     <h1 id="moduleTitle">Carregando...</h1>
                 </header>
                 <div id="moduleContentArea" class="module-view"></div>
-                <footer class="content-footer">
-                    <button id="prevBtn" class="btn btn-secondary" disabled>Anterior</button>
-                    <div class="navigation-hints">Extrusion Master | Formação Especializada</div>
-                    <button id="nextBtn" class="btn btn-primary">Próximo</button>
-                </footer>
             </main>
         `;
 
@@ -127,7 +122,12 @@ class TrainingApp {
         else if (nextQuestionBtn) nextQuestionBtn.click();
         else if (startQuizBtn) startQuizBtn.click();
         else if (finishModuleBtn) finishModuleBtn.click();
-        else if (!this.nextBtn.disabled) this.navigate(1);
+        else {
+            // Se o botão não existir ou estiver habilitado, permitimos a navegação via teclado
+            if (!this.nextBtn || !this.nextBtn.disabled) {
+                this.navigate(1);
+            }
+        }
     }
 
     handleSearchPrev(module) {
@@ -140,13 +140,24 @@ class TrainingApp {
         else if (backToVisualsBtn) backToVisualsBtn.click();
         else if (backToSlidesBtn) backToSlidesBtn.click();
         else if (retryBtn) retryBtn.click();
-        else if (!this.prevBtn.disabled) this.navigate(-1);
+        else {
+            if (!this.prevBtn || !this.prevBtn.disabled) {
+                this.navigate(-1);
+            }
+        }
     }
 
     loadModule(index, initialSlideIndex = 0) {
         console.log(`Loading module ${index} at slide ${initialSlideIndex}. Current contentArea HTML:`, this.contentArea.innerHTML);
         this.currentModuleIndex = index;
         this.slideIndex = initialSlideIndex;
+
+        // Notify parent application
+        window.parent.postMessage({ 
+            type: 'elearning-navigation', 
+            moduleIndex: index + 1, 
+            action: 'loadModule' 
+        }, '*');
 
         const module = this.data.modules[index];
 
@@ -511,6 +522,14 @@ class TrainingApp {
         if (passed) {
             module.status = 'completed';
             this.unlockNext();
+
+            // Notify parent that module is completed
+            window.parent.postMessage({ 
+                type: 'elearning-navigation', 
+                moduleIndex: this.currentModuleIndex + 1, 
+                action: 'moduleCompleted' 
+            }, '*');
+
             document.getElementById('finishModule').onclick = () => this.navigate(1);
         } else {
             document.getElementById('retryReview').onclick = () => this.loadModule(this.currentModuleIndex);
@@ -526,12 +545,17 @@ class TrainingApp {
     }
 
     updateNavigationButtons() {
-        if (!this.prevBtn) return;
         const module = this.data.modules[this.currentModuleIndex];
-        this.prevBtn.disabled = this.currentModuleIndex === 0;
+        if (this.prevBtn) {
+            this.prevBtn.disabled = this.currentModuleIndex === 0;
+        }
+        
         const nextModule = this.data.modules[this.currentModuleIndex + 1];
         const isNextDisabled = !nextModule || (nextModule.status === 'locked' && module.status !== 'completed');
-        this.nextBtn.disabled = isNextDisabled;
+        
+        if (this.nextBtn) {
+            this.nextBtn.disabled = isNextDisabled;
+        }
         console.log(`[DEBUG] updateNavigationButtons: currentModule=${this.currentModuleIndex}, nextDisabled=${isNextDisabled}`);
     }
 

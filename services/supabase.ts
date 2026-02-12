@@ -1,11 +1,11 @@
+import { createClient } from '@supabase/supabase-js';
 
-// Ficheiro de compatibilidade: Removida a inicialização real para evitar erros de configuração.
-export const supabase = {
-  auth: {
-    getSession: async () => ({ data: { session: null } }),
-    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-    signInWithPassword: async () => ({ data: { user: null }, error: null }),
-    signUp: async () => ({ data: { user: null }, error: null }),
-    signOut: async () => {}
-  }
-} as any;
+// No Vite, as variáveis devem estar no ficheiro .env na RAIZ do projeto
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder';
+
+if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+  console.warn('⚠️ Supabase credentials missing! Please ensure .env is in the PROJECT ROOT.');
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);

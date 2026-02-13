@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { User } from '../types';
-import { BookOpen, Loader2, Mail, ArrowRight, Lock, Chrome, AlertCircle } from 'lucide-react';
+import { BookOpen, Loader2, Mail, ArrowRight, Lock, Chrome, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../services/supabase';
 
 interface AuthProps {
@@ -13,6 +13,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false); // New state for password visibility
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -145,15 +146,22 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
             <div className="space-y-1">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Palavra-passe</label>
               <div className="relative">
-                <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
                 <input 
-                  type="password" 
+                  type={passwordVisible ? "text" : "password"} 
                   required 
                   value={password} 
                   onChange={(e) => setPassword(e.target.value)} 
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all" 
+                  className="w-full px-6 py-4 pr-12 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all" 
                   placeholder="••••••••" 
                 />
+                <button 
+                  type="button"
+                  onClick={() => setPasswordVisible(!passwordVisible)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  aria-label={passwordVisible ? "Hide password" : "Show password"}
+                >
+                  {passwordVisible ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 

@@ -157,7 +157,7 @@ const App: React.FC = () => {
           if (pc) {
             return { ...dc, progress: pc.progress, lessons: dc.lessons.map(dl => {
               const pl = pc.lessons.find(l => l.id === dl.id);
-              return pl ? { ...dl, completed: pl.completed, rating: pl.rating } : dl;
+              return pl ? { ...dl, completed: pl.completed, rating: pl.rating, score: pl.score } : dl;
             })};
           }
           return dc;
@@ -169,12 +169,15 @@ const App: React.FC = () => {
         mergedCourses = mergedCourses.map(c => {
           const cp = cloudProgress.find(p => p.course_id === c.id);
           if (cp) {
-            const completedIds = cp.completed_lessons || [];
-            const updatedLessons = c.lessons.map(l => ({
-              ...l,
-              completed: completedIds.includes(l.id)
-            }));
-            const progress = Math.round((updatedLessons.filter(l => l.completed).length / updatedLessons.length) * 100);
+            const cloudCompletedLessons: { id: string; score: number }[] = cp.completed_lessons || []; // Assuming this structure from Supabase
+            const updatedLessons = c.lessons.map(l => {
+              const cloudLesson = cloudCompletedLessons.find(cl => cl.id === l.id);
+              return cloudLesson
+                ? { ...l, completed: cloudLesson.score >= 80, score: cloudLesson.score } // Update based on cloud score
+                : { ...l, completed: false, score: 0 }; // Reset if not in cloud progress
+            });
+            const completedCount = updatedLessons.filter(l => l.completed).length;
+            const progress = Math.round((completedCount / updatedLessons.length) * 100);
             return { ...c, lessons: updatedLessons, progress };
           }
           return c;
@@ -257,8 +260,8 @@ const App: React.FC = () => {
                 // Sincronizar com Supabase (Nova tabela: user_elearning)
                 try {
                   const completedLessons = updated.lessons
-                    .filter(l => l.completed)
-                    .map(l => l.id);
+                    .filter(l => l.completed && l.score !== undefined) // Only include truly completed lessons with a score
+                    .map(l => ({ id: l.id, score: l.score })); // Store id and score
                   
                   await supabase
                     .from('user_elearning')

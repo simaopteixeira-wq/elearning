@@ -519,17 +519,15 @@ class TrainingApp {
             </div>
         `;
 
+        // Always notify parent of module progress, regardless of pass/fail
+        window.parent.postMessage({ 
+            type: 'elearning-navigation', 
+            moduleIndex: this.currentModuleIndex + 1, 
+            action: 'moduleProgress',
+            score: percentage 
+        }, '*');
+
         if (passed) {
-            module.status = 'completed';
-            this.unlockNext();
-
-            // Notify parent that module is completed
-            window.parent.postMessage({ 
-                type: 'elearning-navigation', 
-                moduleIndex: this.currentModuleIndex + 1, 
-                action: 'moduleCompleted' 
-            }, '*');
-
             document.getElementById('finishModule').onclick = () => this.navigate(1);
         } else {
             document.getElementById('retryReview').onclick = () => this.loadModule(this.currentModuleIndex);

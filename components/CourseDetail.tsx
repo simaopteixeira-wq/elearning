@@ -52,14 +52,25 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
     });
   }, [selectedLesson.id, course.id]);
 
-  const toggleLessonComplete = React.useCallback((lessonId: string) => {
+  const toggleLessonComplete = React.useCallback((lessonId: string, score: number | null = null) => {
     const lessonToToggle = course.lessons.find(l => l.id === lessonId);
-    const isBecomingComplete = lessonToToggle ? !lessonToToggle.completed : false;
+    if (!lessonToToggle) return;
 
-    const updatedLessons = course.lessons.map(l => 
-      l.id === lessonId ? { ...l, completed: !l.completed } : l
+    let isCompleted = lessonToToggle.completed;
+    let lessonScore = lessonToToggle.score || 0;
+
+    if (score !== null) {
+      lessonScore = score;
+      isCompleted = score >= 80; // Assuming 80% is the passing score
+    } else {
+      // For non-project lessons or manual toggling (if applicable later)
+      isCompleted = !lessonToToggle.completed;
+    }
+
+    const updatedLessons = course.lessons.map(l =>
+      l.id === lessonId ? { ...l, completed: isCompleted, score: lessonScore } : l
     );
-    
+
     const completedCount = updatedLessons.filter(l => l.completed).length;
     const progress = Math.round((completedCount / updatedLessons.length) * 100);
 
@@ -70,11 +81,11 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
     };
 
     onUpdateCourse(updatedCourse);
-    
+
     const newSelected = updatedLessons.find(l => l.id === lessonId);
     if (newSelected) {
       setSelectedLesson(newSelected);
-      if (isBecomingComplete) {
+      if (isCompleted && !lessonToToggle.completed) { // Only show success if it just became completed
         setShowSuccess(true);
       }
     }
@@ -102,18 +113,18 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
       // Safety check for message data
       if (!event.data || typeof event.data !== 'object') return;
 
-      const { type, moduleIndex, action } = event.data;
-      
+      const { type, moduleIndex, action, score } = event.data; // Destructure score
+
       if (type === 'elearning-navigation') {
-        const targetLesson = course.lessons.find(l => 
+        const targetLesson = course.lessons.find(l =>
           l.externalUrl?.includes(`module=${moduleIndex}`)
         );
 
         if (targetLesson) {
           if (action === 'loadModule' && targetLesson.id !== selectedLesson.id) {
             setSelectedLesson(targetLesson);
-          } else if (action === 'moduleCompleted' && !targetLesson.completed) {
-            toggleLessonComplete(targetLesson.id);
+          } else if (action === 'moduleProgress') { // Handle moduleProgress
+            toggleLessonComplete(targetLesson.id, score); // Pass score to toggleLessonComplete
           }
         }
       }
@@ -126,6 +137,8 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
   const currentIndex = course.lessons.findIndex(l => l.id === selectedLesson.id);
   const isLastLesson = currentIndex === course.lessons.length - 1;
   const nextLesson = !isLastLesson ? course.lessons[currentIndex + 1] : null;
+
+  const canAdvance = selectedLesson.type !== 'project' || (selectedLesson.score !== undefined && selectedLesson.score >= 80);
 
   return (
     <div className="max-w-7xl mx-auto animate-in slide-in-from-bottom-4 duration-500 relative">
@@ -275,20 +288,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
                 </div>
               </div>
               
-              <button 
-                onClick={() => toggleLessonComplete(selectedLesson.id)}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all shadow-lg ${
-                  selectedLesson.completed 
-                    ? 'bg-teal-50 text-teal-600 border border-teal-200' 
-                    : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-100'
-                }`}
-              >
-                {selectedLesson.completed ? (
-                  <><CheckCircle size={20} /> Concluído</>
-                ) : (
-                  <><CheckCircle2 size={20} /> Concluir Aula</>
-                )}
-              </button>
+              
             </div>
 
             <div className="prose prose-slate max-w-none">
@@ -342,7 +342,8 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
               {nextLesson && (
                 <button 
                   onClick={() => setSelectedLesson(nextLesson)}
-                  className="px-6 py-2 bg-slate-800 text-white rounded-lg font-semibold hover:bg-slate-700 transition-colors flex items-center gap-2"
+                  disabled={!canAdvance}
+                  className={`px-6 py-2 bg-slate-800 text-white rounded-lg font-semibold hover:bg-slate-700 transition-colors flex items-center gap-2 ${!canAdvance ? 'opacity-30 cursor-not-allowed' : ''}`}
                 >
                   Próxima Aula <ChevronRight size={18} />
                 </button>
@@ -379,24 +380,28 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
             </div>
 
             <div className="max-h-[500px] overflow-y-auto">
-              {course.lessons.map((lesson, idx) => (
+              {course.lessons.map((lesson, idx) => {
+                const previousLesson = course.lessons[idx - 1];
+                const isPreviousLessonCompleted = previousLesson
+                  ? previousLesson.type !== 'project' || (previousLesson.score !== undefined && previousLesson.score >= 80)
+                  : true; // First lesson is never locked by previous
+
+                const isLessonLocked = (lesson.type === 'project' && idx > currentIndex && !isPreviousLessonCompleted);
+
+                return (
                 <div 
                   key={lesson.id}
-                  onClick={() => setSelectedLesson(lesson)}
+                  onClick={() => {
+                    if (!isLessonLocked) {
+                      setSelectedLesson(lesson);
+                    }
+                  }}
                   className={`p-4 flex items-center justify-between cursor-pointer border-b border-slate-50 transition-all group ${
                     selectedLesson.id === lesson.id ? 'bg-indigo-50/50' : 'hover:bg-slate-50'
-                  }`}
+                  } ${isLessonLocked ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <div className="flex gap-3 items-start">
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleLessonComplete(lesson.id);
-                      }}
-                      className={`shrink-0 mt-0.5 transition-colors ${lesson.completed ? 'text-teal-500' : 'text-slate-300 group-hover:text-slate-400'}`}
-                    >
-                      <CheckCircle2 size={20} fill={lesson.completed ? 'currentColor' : 'none'} />
-                    </button>
+                    <CheckCircle2 size={20} fill={lesson.completed ? 'currentColor' : 'none'} className={`shrink-0 mt-0.5 transition-colors ${lesson.completed ? 'text-teal-500' : 'text-slate-300'}`} />
                     <div>
                       <p className={`text-sm font-bold transition-colors line-clamp-1 ${selectedLesson.id === lesson.id ? 'text-indigo-600' : 'text-slate-700'}`}>
                         {idx + 1}. {lesson.title}
@@ -415,7 +420,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
                     </div>
                   </div>
                 </div>
-              ))}
+              );})}
             </div>
           </div>
         </div>

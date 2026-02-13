@@ -8,6 +8,7 @@ export interface Lesson {
   type?: 'text' | 'video' | 'project';
   externalUrl?: string;
   rating?: number;
+  score?: number; // Added score property
 }
 
 export interface Course {

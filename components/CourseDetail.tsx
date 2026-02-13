@@ -23,12 +23,16 @@ interface CourseDetailProps {
   onBack: () => void;
   onUpdateCourse: (course: Course) => void;
   sendEvent: (eventType: string, data: any) => void;
+  user: User;
+  showCertificateModal: boolean;
+  setShowCertificateModal: (show: boolean) => void;
+  certificateCourse: Course | null;
 }
 
-const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCourse, sendEvent }) => {
+const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCourse, sendEvent, user, showCertificateModal, setShowCertificateModal, certificateCourse, setCertificateCourse }) => {
+  console.log('CourseDetail props:', { setCertificateCourse, setShowCertificateModal });
   const [selectedLesson, setSelectedLesson] = useState<Lesson>(course.lessons[0]);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [showCertificate, setShowCertificate] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
 
   // Sincronizar lição selecionada quando o curso atualiza (ex: após marcar como concluída)
@@ -144,17 +148,17 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
     <div className="max-w-7xl mx-auto animate-in slide-in-from-bottom-4 duration-500 relative">
       
       {/* Certificate Modal */}
-      {showCertificate && (
+      {showCertificateModal && certificateCourse && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-4xl overflow-hidden relative border-[12px] border-slate-50">
+          <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-4xl overflow-hidden relative border-[12px] border-slate-50 print-certificate">
             <button 
-              onClick={() => setShowCertificate(false)}
-              className="absolute top-8 right-8 p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors z-20"
+              onClick={() => setShowCertificateModal(false)}
+              className="absolute top-8 right-8 p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors z-20 print-hidden"
             >
               <X size={20} className="text-slate-500" />
             </button>
             
-            <div className="p-12 text-center space-y-8 relative">
+            <div className="p-12 text-center space-y-8 relative" id="certificate-content">
               <div className="absolute top-0 left-0 w-64 h-64 bg-indigo-50 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl opacity-50"></div>
               <div className="absolute bottom-0 right-0 w-64 h-64 bg-teal-50 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl opacity-50"></div>
 
@@ -167,10 +171,10 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
               </header>
 
               <div className="py-12 relative z-10">
-                <h2 className="text-3xl md:text-4xl font-black text-indigo-600 mb-2">{course.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-black text-indigo-600 mb-2">{certificateCourse.title}</h2>
                 <div className="h-1 w-24 bg-slate-200 mx-auto rounded-full mb-8"></div>
                 <p className="text-lg text-slate-500">Emitido para:</p>
-                <p className="text-4xl font-serif font-bold text-slate-800 italic mt-2">Mestrando Digital</p>
+                <p className="text-4xl font-serif font-bold text-slate-800 italic mt-2">{user.name}</p>
               </div>
 
               <footer className="pt-12 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
@@ -187,9 +191,17 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
                 </div>
                 <div className="space-y-1">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">ID de Verificação</p>
-                  <p className="text-slate-800 font-mono font-bold text-sm">MD-{course.id.toUpperCase()}-2024</p>
+                  <p className="text-slate-800 font-mono font-bold text-sm">MD-{certificateCourse.id.toUpperCase()}-2024</p>
                 </div>
               </footer>
+              <div className="mt-8 print-hidden">
+                <button 
+                  onClick={() => window.print()}
+                  className="bg-indigo-600 text-white py-3 px-6 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 mx-auto"
+                >
+                  <Award size={18} /> Imprimir Certificado
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -371,7 +383,10 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onUpdateCou
               </div>
               {course.progress === 100 && (
                 <button 
-                  onClick={() => setShowCertificate(true)}
+                  onClick={() => {
+                    setCertificateCourse(course);
+                    setShowCertificateModal(true);
+                  }}
                   className="w-full mt-4 bg-indigo-600 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
                 >
                   <Award size={18} /> Ver Certificado

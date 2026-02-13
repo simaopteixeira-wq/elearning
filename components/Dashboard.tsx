@@ -22,9 +22,11 @@ interface DashboardProps {
   onSelectCourse: (course: Course) => void;
   onAddCourse: (course: Course) => void;
   filterByProgress?: boolean;
+  setShowCertificateModal: (show: boolean) => void; // New prop
+  setCertificateCourse: (course: Course | null) => void; // New prop
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ courses = [], onSelectCourse, onAddCourse, filterByProgress }) => {
+const Dashboard: React.FC<DashboardProps> = ({ courses = [], onSelectCourse, onAddCourse, filterByProgress, setShowCertificateModal, setCertificateCourse }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [topic, setTopic] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -182,11 +184,18 @@ const Dashboard: React.FC<DashboardProps> = ({ courses = [], onSelectCourse, onA
                 onClick={() => onSelectCourse(course)}
                 className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group relative"
               >
-                {course.progress === 100 && (
-                  <div className="absolute top-4 right-4 z-20 bg-teal-500 text-white p-1.5 rounded-full shadow-lg animate-bounce">
-                    <Award size={18} />
-                  </div>
-                )}
+              {course.progress === 100 && (
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent onSelectCourse from firing
+                    setCertificateCourse(course);
+                    setShowCertificateModal(true);
+                  }}
+                  className="absolute top-4 right-4 z-20 bg-teal-500 text-white p-1.5 rounded-full shadow-lg animate-bounce"
+                >
+                  <Award size={18} />
+                </button>
+              )}
                 
                 <div className="relative aspect-video overflow-hidden">
                   <img 

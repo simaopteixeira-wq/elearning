@@ -15,6 +15,8 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>('login');
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const [certificateCourse, setCertificateCourse] = useState<Course | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
   const sendEvent = (eventType: string, data: any) => {
@@ -241,6 +243,8 @@ const App: React.FC = () => {
               }
             }}
             filterByProgress={currentView === 'my-courses'}
+            setShowCertificateModal={setShowCertificateModal}
+            setCertificateCourse={setCertificateCourse}
           />
         )}
 
@@ -279,6 +283,11 @@ const App: React.FC = () => {
               setSelectedCourse(updated);
             }}
             sendEvent={sendEvent}
+            user={user}
+            showCertificateModal={showCertificateModal}
+            setShowCertificateModal={setShowCertificateModal}
+            certificateCourse={certificateCourse}
+            setCertificateCourse={setCertificateCourse}
           />
         )}
 

@@ -242,7 +242,7 @@ export const courseData = {
                         question: "Qual o papel do 'Hub' ou 'Pellet Mill' no die?",
                         options: ["Centrar as roscas", "Garantir a distribuição uniforme do fluxo para os furos", "Cortar o produto", "Aquecer a gearbox"],
                         correctIndex: 1,
-                        explanation: "Permite que a massa chegue a todos os furos com a mesma pressão e velocidade."
+                        explanation: "Permite que a massa llegue a todos os furos com a mesma pressão e velocidade."
                     },
                     {
                         question: "O que é uma extrusora de Dupla Rosca (TSE)?",
@@ -262,48 +262,131 @@ export const courseData = {
             slides: [
                 {
                     title: "Sistema Operacional",
-                    content: "É a interface homem-máquina (HMI) que permite o controlo total da linha. Integra o PLC e os acionamentos auxiliares."
+                    content: "É a interface homem-máquina (HMI) que permite o controlo total da linha. Integra o PLC e os acionamentos auxiliares. As HMIs modernas usam ecrãs táteis e software SCADA para visualização em tempo real."
                 },
                 {
                     title: "Estados de Sequência",
-                    content: "O controlo automático possui 6 estados: 1. Descanso, 2. Partida de motores, 3. Fase de arranque, 4. Produção, 5. Paragem, 6. Paragem Rápida."
+                    content: "O controlo automático possui 6 estados:<br><br><b>1. Descanso (Idle)</b>: Máquina parada e segura<br><b>2. Partida de Motores</b>: Ativação de motores principais<br><b>3. Fase de Arranque</b>: Ramp-up gradual (10-30 min)<br><b>4. Produção</b>: Regime normal de operação<br><b>5. Paragem</b>: Redução gradual<br><b>6. Paragem Rápida</b>: Emergência imediata"
+                },
+                {
+                    title: "Parâmetros Típicos de Processo",
+                    content: "<b>Gamas operacionais comuns para RTE:</b><br>• <b>SME</b>: 120-180 Wh/kg (snacks expandidos)<br>• <b>Temperatura</b>: 120-180°C no barril<br>• <b>Pressão no die</b>: 20-80 bar<br>• <b>Humidade entrada</b>: 12-15%<br>• <b>Velocidade rosca</b>: 100-400 RPM<br>• <b>Torque</b>: 40-80% da capacidade nominal"
                 },
                 {
                     title: "Gestão de Receitas",
-                    content: "Permite guardar todos os set-points (alimentação, velocidades, temperaturas) para garantir a reprodutibilidade da qualidade."
+                    content: "Permite guardar todos os set-points (alimentação, velocidades, temperaturas) para garantir a reprodutibilidade da qualidade. Cada receita inclui: parâmetros de alimentação, perfil de temperatura, velocidades, pressões alvo, e configurações de corte."
                 },
                 {
                     title: "Controlo Automático de SME",
-                    content: "O sistema pode ajustar automaticamente a velocidade da rosca ou a alimentação para manter um SME alvo."
+                    content: "O sistema pode ajustar automaticamente a velocidade da rosca ou a alimentação para manter um SME alvo. O controlo PID (Proporcional-Integral-Derivativo) corrige desvios em tempo real, garantindo consistência do produto."
                 },
                 {
                     title: "Controlo de Densidade",
-                    content: "Módulos específicos controlam a pressão e a injeção de vapor/água para atingir a densidade desejada do snack."
+                    content: "Módulos específicos controlam a pressão e a injeção de vapor/água para atingir a densidade desejada do snack. A densidade alvo (ex: 25-45 g/L para cereais leves) é mantida ajustando a temperatura e a humidade no die."
                 },
                 {
                     title: "Monitorização de Torque",
-                    content: "Crítico para proteção da máquina. O sistema reduz a alimentação se o torque exceder os limites de segurança."
+                    content: "Crítico para proteção da máquina. O sistema reduz a alimentação se o torque exceder os limites de segurança (tipicamente 85%). O torque elevado indica: produto muito seco, obstrução, ou velocidade excessiva."
                 },
                 {
                     title: "Mensagens vs Alarmes",
-                    content: "<b>Mensagens</b>: Informativas, não param o processo. <b>Alarmes</b>: Indicam perigo imediato e podem forçar a paragem da linha."
+                    content: "<b>Mensagens</b>: Informativas, não param o processo (ex: 'Receita carregada', 'Temperatura OK').<br><b>Alarmes</b>: Indicam perigo imediato e podem forçar a paragem (ex: 'Torque crítico', 'Sobreaquecimento', 'Falha de motor')."
                 },
                 {
                     title: "Trending",
-                    content: "Gravação em tempo real de todos os parâmetros (até 48 valores por segundo) para análise de performance."
+                    content: "Gravação em tempo real de todos os parâmetros (até 48 valores por segundo) para análise de performance. Permite identificar tendências, correlações entre variáveis, e antecipar problemas antes que se tornem falhas."
                 },
                 {
                     title: "Ramping",
-                    content: "Mudança gradual entre o estado de arranque e a produção total para evitar instabilidades ou bloqueios."
+                    content: "Mudança gradual entre o estado de arranque e a produção total para evitar instabilidades ou bloqueios. O ramping pode demorar 10-30 minutos e inclui: aumento gradual de temperatura, aceleração de alimentadores, e estabelecimento de pressão."
                 },
                 {
                     title: "Níveis de Acesso",
-                    content: "O sistema possui gestão de utilizadores com diferentes direitos para Operadores, Manutenção e Gestores."
+                    content: "O sistema possui gestão de utilizadores com diferentes direitos:<br><br><b>Operador</b>: Iniciar/parar, ajustar parâmetros menores<br><b>Manutenção</b>: Diagnósticos, alterações técnicas<br><b>Gestor</b>: Criar receitas, relatórios, configurações de sistema"
+                },
+                {
+                    title: "Diagnóstico de Problemas",
+                    content: "<b>Problemas comuns e causas:</b><br><br><b>Baixa expansão</b>: Temperatura insuficiente, humidade excessiva, SME baixo<br><b>Pico de torque</b>: Produto muito seco, obstrução no die<br><b>Produto heterogéneo</b>: Mistura inadequada, alimentação irregular<br><b>Odor a queimado</b>: Temperatura excessiva, produto estagnado"
+                },
+                {
+                    title: "Indústria 4.0 e Extrusão",
+                    content: "Os sistemas modernos de extrusão integram conceitos de Indústria 4.0:<br><br>• <b>IoT</b>: Sensores em tempo real<br>• <b>Big Data</b>: Análise de milhões de pontos de dados<br>• <b>Machine Learning</b>: Predição de problemas<br>• <b>Cloud</b>: Monitorização remota<br>• <b>Digital Twin</b>: Simulação virtual do processo"
+                },
+                {
+                    title: "Segurança no Controlo",
+                    content: "Sistemas de segurança são críticos:<br><br>• <b>Paragem de Emergência</b>: Para imediata toda a linha<br><b>Interlocks</b>: Impedem operação insegura<br><b>Limites de torque</b>: Proteção do motor e gearbox<br><b>Controlo de temperatura</b>: Prevenção de sobreaquecimento<br>• <b>Monitorização de vibração</b>: Deteção precoce de falhas mecânicas"
                 }
             ],
             video: {
-                title: "Software de Controlo",
-                description: "Demonstração da interface de controlo e parâmetros ativos."
+                title: "Parâmetros de Processo Reais",
+                description: "Demonstração de HMI industrial com parâmetros reais de extrusão."
+            },
+            interactive: {
+                type: "simulator",
+                title: "Simulador de Parâmetros",
+                description: "Ajuste os parâmetros e observe o efeito no produto",
+                params: [
+                    { id: "sme", name: "SME (Wh/kg)", min: 80, max: 250, default: 150, unit: "Wh/kg" },
+                    { id: "temp", name: "Temperatura", min: 80, max: 220, default: 150, unit: "°C" },
+                    { id: "humidity", name: "Humidade", min: 8, max: 20, default: 13, unit: "%" },
+                    { id: "rpm", name: "Velocidade Rosca", min: 50, max: 500, default: 200, unit: "RPM" }
+                ],
+                thresholds: {
+                    optimal: { sme: [120, 180], temp: [130, 170], humidity: [12, 15], rpm: [100, 300] },
+                    warning: { sme: [100, 200], temp: [110, 190], humidity: [10, 17], rpm: [80, 350] }
+                },
+                feedback: {
+                    lowExpansion: "Expansão insuficiente - Aumente SME ou temperatura",
+                    highExpansion: "Expansão excessiva - Risco de explosão no die",
+                    optimal: "Parâmetros dentro da gama ótima",
+                    lowTemp: "Temperatura baixa - Gelatinização incompleta",
+                    highTemp: "Temperatura alta - Risco de caramelização excessiva"
+                }
+            },
+            troubleshooting: {
+                title: "Exercício de Troubleshooting",
+                description: "Identifique o problema e proponha a solução",
+                scenarios: [
+                    {
+                        id: 1,
+                        name: "Cenário: Queda de Produção",
+                        symptoms: ["Torque a 92%", "Temperatura a cair", "Pressão instável"],
+                        correctCause: "Humidade excessiva na entrada",
+                        correctSolution: "Reduzir humidade de alimentação",
+                        options: [
+                            { cause: "Humidade excessiva na entrada", solution: "Reduzir humidade de alimentação" },
+                            { cause: "Velocidade muito alta", solution: "Reduzir RPM da rosca" },
+                            { cause: "Die obstruído", solution: "Parar e limpar o die" },
+                            { cause: "Motor com falha", solution: "Verificar acionamento do motor" }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "Cenário: Produto Escuro",
+                        symptoms: ["Cor castanha no produto", "Aroma de caramelizado", "Temperatura elevada"],
+                        correctCause: "Temperatura excessiva",
+                        correctSolution: "Reduzir temperatura do barril",
+                        options: [
+                            { cause: "Temperatura excessiva", solution: "Reduzir temperatura do barril" },
+                            { cause: "Farinha queimada", solution: "Verificar pré-aquecimento" },
+                            { cause: "Excesso de açúcar", solution: "Verificar receita" },
+                            { cause: "Velocidade muito baixa", solution: "Aumentar RPM" }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: "Cenário: Produto Pequeno",
+                        symptoms: ["Baixa expansão", "Densidade alta", "Corte irregular"],
+                        correctCause: "SME insuficiente",
+                        correctSolution: "Aumentar velocidade da rosca ou reduzir humidade",
+                        options: [
+                            { cause: "SME insuficiente", solution: "Aumentar velocidade da rosca ou reduzir humidade" },
+                            { cause: "Die muito pequeno", solution: "Verificar furação da matriz" },
+                            { cause: "Corte muito rápido", solution: "Reduzir velocidade do cortador" },
+                            { cause: "Temperatura baixa", solution: "Aumentar temperatura" }
+                        ]
+                    }
+                ]
             },
             quiz: {
                 passingScore: 80,
@@ -311,37 +394,74 @@ export const courseData = {
                     {
                         question: "Quantos estados principais compõem a sequência de controlo?",
                         options: ["2", "4", "6", "10"],
-                        correctIndex: 2
+                        correctIndex: 2,
+                        explanation: "A sequência automática tem 6 estados: Descanso, Partida, Arranque, Produção, Paragem e Paragem Rápida."
                     },
                     {
                         question: "O que o sistema faz quando deteta um excesso de torque?",
                         options: ["Aumenta a alimentação", "Reduz a alimentação ou para o processo", "Apaga as luzes", "Injeta mais farinha"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "O sistema reduz automaticamente a alimentação para proteger o motor e a gearbox de danos."
                     },
                     {
                         question: "Qual a diferença entre uma mensagem e um alarme?",
-                        options: ["Nenhuma", "Mensagens são avisos, Alarmes indicam perigo e paragem", "Alarmes são mais bonitos", "Mensagens apagam os dados"],
-                        correctIndex: 1
+                        options: ["Nenhuma", "Mensagens são avisos, Alarmes indicam perigo e paragem", "Alarmes são mais bonitas", "Mensagens apagam os dados"],
+                        correctIndex: 1,
+                        explanation: "Mensagens são informativas e não param o processo, enquanto alarmes indicam situações críticas que podem exigir paragem."
                     },
                     {
                         question: "Para que serve a função de Trending?",
                         options: ["Para ver filmes", "Para analisar o histórico de parâmetros de produção", "Para mudar a cor da HMI", "Para falar com o suporte"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "Trending regista parâmetros ao longo do tempo, permitindo análise de performance e deteção de tendências."
                     },
                     {
                         question: "A 'Fase de Produção' é qual número na sequência?",
                         options: ["1", "4", "6", "3"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "O estado 4 corresponde à Fase de Produção, após o arranque."
                     },
                     {
                         question: "O que acontece na 'Paragem Rápida' (Quick Stop)?",
                         options: ["A máquina abranda lentamente", "Paragem imediata de segurança", "Aumenta a velocidade", "Inicia a limpeza automática"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "Quick Stop é uma paragem de emergência que para todos os motores imediatamente."
                     },
                     {
                         question: "O que o sistema ajusta para manter o SME alvo?",
                         options: ["A cor da massa", "Velocidade da rosca ou alimentação", "Pressão do óleo", "Temperatura da sala"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "O controlo automático ajusta a velocidade da rosca ou a taxa de alimentação para manter o SME no valor desejado."
+                    },
+                    {
+                        question: "Qual é a gama típica de SME para snacks diretamente expandidos?",
+                        options: ["50-80 Wh/kg", "120-180 Wh/kg", "200-300 Wh/kg", "10-50 Wh/kg"],
+                        correctIndex: 1,
+                        explanation: "Para cereais e snacks RTE, o SME típico situa-se entre 120-180 Wh/kg."
+                    },
+                    {
+                        question: "O que indica um torque elevado no extrusor?",
+                        options: ["Produto muito húmido", "Produto muito seco ou obstrução", "Temperatura muito baixa", "Velocidade muito baixa"],
+                        correctIndex: 1,
+                        explanation: "Torque elevado geralmente indica produto muito seco (maior fricção) ou início de obstrução."
+                    },
+                    {
+                        question: "Qual a função do Ramping no arranque?",
+                        options: ["Parar rapidamente", "Aumentar gradualmente parâmetros para evitar instabilidades", "Limpar o equipamento", "Mudar de receita"],
+                        correctIndex: 1,
+                        explanation: "Ramping é a mudança gradual de parâmetros do estado de repouso para produção total, evitando picos e bloqueios."
+                    },
+                    {
+                        question: "O que causa produto com cor castanha escura?",
+                        options: ["Temperatura muito baixa", "Temperatura excessiva (Reação de Maillard)", "Humidade alta", "Velocidade muito baixa"],
+                        correctIndex: 1,
+                        explanation: "A reação de Maillard ocorre a temperaturas elevadas, produzindo cor castanha e sabor caramelizado."
+                    },
+                    {
+                        question: "Qual dos seguintes é um conceito de Indústria 4.0 aplicado à extrusão?",
+                        options: ["Paperless total", "Digital Twin", "Operação manual", "Manutenção corretiva apenas"],
+                        correctIndex: 1,
+                        explanation: "Digital Twin é uma representação virtual do processo que permite simulação e otimização em tempo real."
                     }
                 ],
                 failRedirectId: 3
@@ -404,37 +524,44 @@ export const courseData = {
                     {
                         question: "O que causa a expansão instantânea do cereal matinal?",
                         options: ["Pó de fermento", "Evaporação flash da água superaquecida no die", "Sucção de ar externa", "Prensagem mecânica"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "Ao sair para a pressão atmosférica, a água superaquecida transforma-se instantaneamente em vapor."
                     },
                     {
                         question: "O que significa RTE?",
                         options: ["Real Time Extrusion", "Ready To Eat", "Rotation Torque Energy", "Return To Entry"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "RTE significa Ready To Eat - pronto para comer sem preparação adicional."
                     },
                     {
                         question: "Qual o efeito das fibras na expansão?",
                         options: ["Aumentam a expansão", "Reduzem a expansão", "Não alteram nada", "Tornam o produto transparente"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "As fibras interferem na matriz de amido e reduzem a capacidade de expansão."
                     },
                     {
                         question: "O que é 'Bowl Life' num cereal?",
                         options: ["O tempo de vida na prateleira", "O tempo em que se mantém crocante no leite", "O tamanho da tigela", "A cor da caixa"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "Bowl life mede quanto tempo o cereal mantém a crocância quando mergulhado em leite."
                     },
                     {
                         question: "Qual o processo que costuma seguir-se à extrusão no caso dos cereais matinais?",
                         options: ["Moagem", "Congelação", "Secagem e Revestimento (Coating)", "Lavagem com água"],
-                        correctIndex: 2
+                        correctIndex: 2,
+                        explanation: "Após a extrusão, o produto é seco, arrefecido e depois revestido com açúcar/vitaminas."
                     },
                     {
                         question: "O que acontece se a pressão no die for muito baixa?",
                         options: ["O produto explode", "A expansão será insuficiente", "O produto derrete", "O motor acelera"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "Baixa pressão resulta em menor expansão e produto mais denso."
                     },
                     {
                         question: "A reação de Maillard é responsável por quê?",
                         options: ["Pela densidade", "Pelo desenvolvimento da cor e sabor", "Pela forma geométrica", "Pela limpeza das roscas"],
-                        correctIndex: 1
+                        correctIndex: 1,
+                        explanation: "Maillard cria a cor castanha característica e os sabores caramelizados."
                     }
                 ],
                 failRedirectId: 4

@@ -174,10 +174,10 @@ class TrainingApp {
     }
 
     renderSlides(module, slideIndex) {
-        console.log(`[DEBUG] renderSlides: module=${module.id}, slideIndex=${slideIndex}`);
-        this.slideIndex = slideIndex; // Update the app's current slide index
+                this.slideIndex = slideIndex; // Update the app's current slide index
+                console.log(`[DEBUG] renderSlides: module ID = ${module.id}, current slideIndex (input) = ${slideIndex}, stored this.slideIndex (after update) = ${this.slideIndex}, module.slides.length = ${module.slides.length}`);
 
-        const slide = module.slides[slideIndex];
+                const slide = module.slides[this.slideIndex]; // Use this.slideIndex for consistency
         this.contentArea.innerHTML = `
             <div class="slides-container">
                 <div class="slide-progress">Slide ${slideIndex + 1} de ${module.slides.length}</div>
@@ -186,8 +186,8 @@ class TrainingApp {
                     <div class="slide-content">${slide.content}</div>
                 </div>
                 <div class="slide-actions">
-                    <button id="prevSlide" class="btn btn-secondary" ${slideIndex === 0 ? 'disabled' : ''}>Anterior</button>
-                    ${slideIndex + 1 < module.slides.length
+                    <button id="prevSlide" class="btn btn-secondary" ${this.slideIndex === 0 ? 'disabled' : ''}>Anterior</button>
+                    ${this.slideIndex + 1 < module.slides.length
                         ? `<button id="nextSlide" class="btn btn-primary">Próximo</button>`
                         : `<button id="startVideo" class="btn btn-primary">Ver Visualização Técnica</button>`
                     }
@@ -197,14 +197,14 @@ class TrainingApp {
 
         if (document.getElementById('prevSlide')) {
             document.getElementById('prevSlide').onclick = () => {
-                console.log('[DEBUG] prevSlide clicked');
-                this.renderSlides(module, slideIndex - 1);
+                console.log(`[DEBUG] prevSlide clicked. Current slideIndex: ${this.slideIndex}. Calling renderSlides with module ID = ${module.id}, new slideIndex = ${this.slideIndex - 1}`);
+                this.renderSlides(module, this.slideIndex - 1);
             };
         }
         if (document.getElementById('nextSlide')) {
             document.getElementById('nextSlide').onclick = () => {
-                console.log('[DEBUG] nextSlide clicked');
-                this.renderSlides(module, slideIndex + 1);
+                console.log(`[DEBUG] nextSlide clicked. Current slideIndex: ${this.slideIndex}. Calling renderSlides with module ID = ${module.id}, new slideIndex = ${this.slideIndex + 1}`);
+                this.renderSlides(module, this.slideIndex + 1);
             };
         }
 
@@ -228,8 +228,17 @@ class TrainingApp {
         `;
 
         this.runSimulation(module.id);
-        document.getElementById('backToSlides').onclick = () => this.renderSlides(module, module.slides.length - 1);
-        document.getElementById('startDynamicsView').onclick = () => this.renderDynamicsVisualization(module);
+        document.getElementById('backToSlides').onclick = () => this.renderSlides(module, this.slideIndex);
+
+        if (module.interactive && module.interactive.type === 'simulator') {
+            document.getElementById('startDynamicsView').textContent = 'Ver Simulador de Parâmetros';
+            document.getElementById('startDynamicsView').onclick = () => this.renderSimulator(module);
+        } else if (module.troubleshooting) {
+            document.getElementById('startDynamicsView').textContent = 'Ver Exercício de Troubleshooting';
+            document.getElementById('startDynamicsView').onclick = () => this.renderTroubleshooting(module);
+        } else {
+            document.getElementById('startDynamicsView').onclick = () => this.renderDynamicsVisualization(module);
+        }
     }
 
     renderDynamicsVisualization(module) {
@@ -241,14 +250,19 @@ class TrainingApp {
                 <div class="dynamics-stage" id="dynamicsStage"></div>
                 <div class="video-footer">
                     <button id="backToVisuals" class="btn btn-secondary">Anterior (Visualização)</button>
-                    <button id="startQuiz" class="btn btn-primary">Ir para a Avaliação</button>
+                    <button id="startTroubleshooting" class="btn btn-primary">Continuar para Troubleshooting</button>
                 </div>
             </div>
         `;
 
         this.runDynamicsSimulation(module.id);
         document.getElementById('backToVisuals').onclick = () => this.renderTechnicalVideo(module);
-        document.getElementById('startQuiz').onclick = () => this.renderQuizModule(module);
+        if (module.troubleshooting) {
+            document.getElementById('startTroubleshooting').onclick = () => this.renderTroubleshooting(module);
+        } else {
+            document.getElementById('startTroubleshooting').textContent = 'Ir para a Avaliação';
+            document.getElementById('startTroubleshooting').onclick = () => this.renderQuizModule(module);
+        }
     }
 
     runDynamicsSimulation(moduleId) {
@@ -259,9 +273,9 @@ class TrainingApp {
             stage.innerHTML = `
                 <div class="dynamics-m1-interactive">
                     <video class="dynamics-video" autoplay loop>
-                        <source src="assets/PixVerse_V5.5_Extend_360P_Mais_lento_e_durante1.mp4" type="video/mp4">
-                        Seu navegador não suporta vídeo HTML5.
-                        <img src="assets/extruder_clean.png" class="fallback-image" alt="Diagrama Técnico Extrusora">
+                                <source src="/courses/formar-opencode/assets/PixVerse_V5.5_Extend_360P_Mais_lento_e_durante1.mp4" type="video/mp4">
+                                Seu navegador não suporta vídeo HTML5.
+                                <img src="/courses/formar-opencode/assets/extruder_clean.png" class="fallback-image" alt="Diagrama Técnico Extrusora">
                     </video>
                     <div class="hotspots-overlay dynamics-overlay">
                         <div class="hotspot dynamics-hotspot" style="top: 10%; left: 20%;" data-info="Zona de Alimentação: Entrada de matérias-primas secas e líquidos. Primeira zona de mistura e transporte.">?</div>
@@ -282,15 +296,15 @@ class TrainingApp {
             stage.innerHTML = `
                 <div class="dynamics-m2-interactive">
                     <video class="dynamics-video" autoplay loop controls>
-                        <source src="assets/Extrusora_de_Duplo_Parafuso-nologo.mp4" type="video/mp4">
-                        Seu navegador não suporta vídeo HTML5.
-                        <img src="assets/extruder_clean.png" class="fallback-image" alt="Diagrama Técnico de Equipamento">
+                                <source src="/courses/formar-opencode/assets/Extrusora_de_Duplo_Parafuso-nologo.mp4" type="video/mp4">
+                                Seu navegador não suporta vídeo HTML5.
+                                <img src="/courses/formar-opencode/assets/extruder_clean.png" class="fallback-image" alt="Diagrama Técnico de Equipamento">
                     </video>
                 </div>`;
         } else if (moduleId === 3) {
             stage.innerHTML = `
                 <div class="dynamics-m3-interactive">
-                    <img src="assets/placeholder_hmi.png" class="base-image diagram-bg" alt="Diagrama HMI da Extrusora">
+                                <img src="/courses/formar-opencode/assets/placeholder_hmi.png" class="base-image diagram-bg" alt="Diagrama HMI da Extrusora">
                     <div class="hotspots-overlay dynamics-overlay">
                         <div class="hotspot dynamics-hotspot" style="top: 20%; left: 30%;" data-info="HMI: Painel de Controle Principal. Interface para monitorização e ajuste de parâmetros.">?</div>
                         <div class="hotspot dynamics-hotspot" style="top: 50%; left: 60%;" data-info="Parâmetro de Temperatura: Controlo e visualização da temperatura em tempo real.">?</div>
@@ -306,7 +320,7 @@ class TrainingApp {
         } else if (moduleId === 4) {
             stage.innerHTML = `
                 <div class="dynamics-m4-interactive">
-                    <img src="assets/placeholder_cereais.png" class="base-image diagram-bg" alt="Cereais Expandidos">
+                                <img src="/courses/formar-opencode/assets/placeholder_cereais.png" class="base-image diagram-bg" alt="Cereais Expandidos">
                     <div class="hotspots-overlay dynamics-overlay">
                         <div class="hotspot dynamics-hotspot" style="top: 25%; left: 35%;" data-info="Grão de Milho Extrudido: Exemplo de cereal expandido com textura aerada.">?</div>
                         <div class="hotspot dynamics-hotspot" style="top: 55%; left: 65%;" data-info="Arroz Extrudido: Pequenos grãos com alta capacidade de absorção.">?</div>
@@ -349,6 +363,224 @@ class TrainingApp {
         if (popup) popup.onclick = (e) => { if (e.target === popup) popup.style.display = 'none'; };
     }
 
+    renderSimulator(module) {
+        const interactiveData = module.interactive;
+        if (!interactiveData) {
+            this.showNotification('Simulador não disponível para este módulo.', 'warning');
+            this.renderTroubleshooting(module); // Fallback to troubleshooting if simulator is missing
+            return;
+        }
+
+        const currentParams = {};
+        interactiveData.params.forEach(p => {
+            currentParams[p.id] = p.default;
+        });
+
+        const updateSimulatorUI = () => {
+            let feedbackMessages = [];
+            let statusClass = 'info'; // Default status
+
+            const checkThreshold = (paramId, value, optimal, warning) => {
+                if (value < optimal[0] || value > optimal[1]) {
+                    if (value < warning[0] || value > warning[1]) {
+                        return 'critical'; // Outside warning range
+                    }
+                    return 'warning'; // Outside optimal, but within warning
+                }
+                return 'optimal';
+            };
+
+            // Check SME
+            const smeStatus = checkThreshold('sme', currentParams.sme, interactiveData.thresholds.optimal.sme, interactiveData.thresholds.warning.sme);
+            if (smeStatus === 'critical') {
+                feedbackMessages.push(interactiveData.feedback.lowExpansion);
+                statusClass = 'error';
+            } else if (smeStatus === 'warning') {
+                feedbackMessages.push(interactiveData.feedback.lowExpansion); // Re-using for simplicity
+                statusClass = statusClass === 'error' ? 'error' : 'warning';
+            }
+
+            // Check Temperature
+            const tempStatus = checkThreshold('temp', currentParams.temp, interactiveData.thresholds.optimal.temp, interactiveData.thresholds.warning.temp);
+            if (tempStatus === 'critical') {
+                feedbackMessages.push(interactiveData.feedback.lowTemp);
+                statusClass = 'error';
+            } else if (tempStatus === 'warning') {
+                feedbackMessages.push(interactiveData.feedback.lowTemp); // Re-using for simplicity
+                statusClass = statusClass === 'error' ? 'error' : 'warning';
+            }
+            
+            // Check Humidity (inverted logic: high humidity can cause low expansion)
+            const humidityStatus = checkThreshold('humidity', currentParams.humidity, interactiveData.thresholds.optimal.humidity, interactiveData.thresholds.warning.humidity);
+            if (humidityStatus === 'critical' && currentParams.humidity > interactiveData.thresholds.optimal.humidity[1]) {
+                feedbackMessages.push(interactiveData.feedback.lowExpansion); // High humidity -> low expansion
+                statusClass = 'error';
+            } else if (humidityStatus === 'warning' && currentParams.humidity > interactiveData.thresholds.optimal.humidity[1]) {
+                feedbackMessages.push(interactiveData.feedback.lowExpansion);
+                statusClass = statusClass === 'error' ? 'error' : 'warning';
+            }
+
+            // Check RPM (too low RPM can cause low SME and low expansion)
+            const rpmStatus = checkThreshold('rpm', currentParams.rpm, interactiveData.thresholds.optimal.rpm, interactiveData.thresholds.warning.rpm);
+            if (rpmStatus === 'critical' && currentParams.rpm < interactiveData.thresholds.optimal.rpm[0]) {
+                feedbackMessages.push(interactiveData.feedback.lowExpansion); // Low RPM -> low SME -> low expansion
+                statusClass = 'error';
+            } else if (rpmStatus === 'warning' && currentParams.rpm < interactiveData.thresholds.optimal.rpm[0]) {
+                feedbackMessages.push(interactiveData.feedback.lowExpansion);
+                statusClass = statusClass === 'error' ? 'error' : 'warning';
+            }
+
+            if (feedbackMessages.length === 0) {
+                feedbackMessages.push(interactiveData.feedback.optimal);
+                statusClass = 'success';
+            }
+
+            document.getElementById('simulatorFeedback').innerHTML = `<p class="${statusClass}">${feedbackMessages.join('<br>')}</p>`;
+        };
+
+
+        this.contentArea.innerHTML = `
+            <div class="simulator-container">
+                <div class="simulator-header">
+                    <h2>⚙️ ${interactiveData.title}</h2>
+                    <p>${interactiveData.description}</p>
+                </div>
+                <div class="params-grid">
+                    ${interactiveData.params.map(p => `
+                        <div class="param-item">
+                            <label for="${p.id}">${p.name}: <span id="${p.id}Value">${currentParams[p.id]} ${p.unit}</span></label>
+                            <input type="range" id="${p.id}" min="${p.min}" max="${p.max}" value="${currentParams[p.id]}" step="1" class="slider">
+                        </div>
+                    `).join('')}
+                </div>
+                <div id="simulatorFeedback" class="simulator-feedback">
+                    <p class="info">Ajuste os parâmetros para otimizar o processo.</p>
+                </div>
+                <div class="simulator-actions">
+                    <button id="backToVisuals" class="btn btn-secondary">Anterior (Visualização)</button>
+                    <button id="startTroubleshooting" class="btn btn-primary">Continuar para Troubleshooting</button>
+                </div>
+            </div>
+        `;
+
+        interactiveData.params.forEach(p => {
+            const slider = document.getElementById(p.id);
+            const valueSpan = document.getElementById(`${p.id}Value`);
+            slider.oninput = (e) => {
+                currentParams[p.id] = parseInt(e.target.value);
+                valueSpan.innerText = `${currentParams[p.id]} ${p.unit}`;
+                updateSimulatorUI();
+            };
+        });
+
+        document.getElementById('backToVisuals').onclick = () => this.renderTechnicalVideo(module);
+        document.getElementById('startTroubleshooting').onclick = () => this.renderTroubleshooting(module);
+
+        updateSimulatorUI(); // Initial UI update
+
+    }
+
+    renderTroubleshooting(module) {
+        const troubleshootingData = module.troubleshooting;
+        if (!troubleshootingData) {
+            this.showNotification('Exercício de Troubleshooting não disponível para este módulo.', 'warning');
+            this.renderQuizModule(module); // Fallback to quiz if troubleshooting is missing
+            return;
+        }
+
+        let currentScenarioIndex = 0;
+        let score = 0;
+
+        const showScenario = (sIndex) => {
+            const scenario = troubleshootingData.scenarios[sIndex];
+            this.contentArea.innerHTML = `
+                <div class="troubleshooting-container">
+                    <div class="troubleshooting-header">
+                        <h2>🔍 ${troubleshootingData.title}</h2>
+                        <p>${troubleshootingData.description}</p>
+                        <div class="troubleshooting-progress">Cenário ${sIndex + 1} de ${troubleshootingData.scenarios.length}</div>
+                    </div>
+                    <div class="scenario-card">
+                        <h3>${scenario.name}</h3>
+                        <p><b>Sintomas:</b> ${scenario.symptoms.join(', ')}</p>
+                        <div class="options-grid" id="troubleshootingOptions">
+                            ${scenario.options.map((opt, i) => `
+                                <div class="troubleshooting-option">
+                                    <input type="radio" id="cause${sIndex}-${i}" name="cause" value="${opt.cause}">
+                                    <label for="cause${sIndex}-${i}">Causa: ${opt.cause}</label><br>
+                                    <input type="radio" id="solution${sIndex}-${i}" name="solution" value="${opt.solution}">
+                                    <label for="solution${sIndex}-${i}">Solução: ${opt.solution}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div id="troubleshootingFeedback" class="troubleshooting-feedback-box" style="display: none;">
+                            <p id="troubleshootingFeedbackText"></p>
+                            <button id="nextTroubleshootingBtn" class="btn btn-primary">Continuar</button>
+                        </div>
+                        <button id="submitTroubleshooting" class="btn btn-primary">Verificar Resposta</button>
+                    </div>
+                </div>
+            `;
+
+            const optionsGrid = document.getElementById('troubleshootingOptions');
+            const submitBtn = document.getElementById('submitTroubleshooting');
+            const feedbackBox = document.getElementById('troubleshootingFeedback');
+            const feedbackText = document.getElementById('troubleshootingFeedbackText');
+            const nextBtn = document.getElementById('nextTroubleshootingBtn');
+
+            submitBtn.onclick = () => {
+                const selectedCause = document.querySelector('input[name="cause"]:checked')?.value;
+                const selectedSolution = document.querySelector('input[name="solution"]:checked')?.value;
+
+                if (!selectedCause || !selectedSolution) {
+                    this.showNotification('Por favor, selecione uma causa e uma solução.', 'warning');
+                    return;
+                }
+
+                const isCorrect = (selectedCause === scenario.correctCause) && (selectedSolution === scenario.correctSolution);
+
+                if (isCorrect) {
+                    score++;
+                    feedbackText.innerHTML = '<span style="color: var(--success); font-weight: bold;">Correto!</span>';
+                } else {
+                    feedbackText.innerHTML = `<span style="color: var(--error); font-weight: bold;">Incorreto.</span><br>Causa correta: <b>${scenario.correctCause}</b><br>Solução correta: <b>${scenario.correctSolution}</b>`;
+                }
+
+                optionsGrid.querySelectorAll('input').forEach(input => input.disabled = true);
+                submitBtn.disabled = true;
+                feedbackBox.style.display = 'block';
+
+                nextBtn.onclick = () => {
+                    if (sIndex + 1 < troubleshootingData.scenarios.length) {
+                        showScenario(sIndex + 1);
+                    } else {
+                        this.handleTroubleshootingResult(module, score, troubleshootingData.scenarios.length);
+                    }
+                };
+            };
+        };
+
+        showScenario(currentScenarioIndex);
+    }
+
+    handleTroubleshootingResult(module, correctCount, totalScenarios) {
+        const percentage = Math.round((correctCount / totalScenarios) * 100);
+        const passed = percentage >= 80; // Assuming 80% passing score for troubleshooting
+
+        this.contentArea.innerHTML = `
+            <div class="feedback-card">
+                <span class="feedback-icon">${passed ? '✅' : '❌'}</span>
+                <h2 class="feedback-title" style="color: ${passed ? 'var(--success)' : 'var(--error)'}">${passed ? 'Exercício Concluído!' : 'Rever Conceitos'}</h2>
+                <p class="feedback-message">Atingiste ${percentage}% neste exercício. ${passed ? 'Podes avançar para a avaliação.' : 'Tenta rever os conceitos e tentar novamente.'}</p>
+                <div class="feedback-actions">
+                    <button class="btn btn-primary" id="startQuiz">Ir para a Avaliação</button>
+                </div>
+            </div>
+        `;
+        document.getElementById('startQuiz').onclick = () => this.renderQuizModule(module);
+    }
+
+
     runSimulation(moduleId) {
         const stage = document.getElementById('simStage');
         if (!stage) return;
@@ -356,7 +588,7 @@ class TrainingApp {
         if (moduleId === 1) {
             stage.innerHTML = `
                 <div class="sim-m1-interactive">
-                    <img src="assets/extruder_clean.png" class="base-image diagram-bg" alt="Diagrama Técnico Extrusora">
+                                <img src="/courses/formar-opencode/assets/extruder_clean.png" class="base-image diagram-bg" alt="Diagrama Técnico Extrusora">
                     <div class="hotspots-overlay">
                         <div class="hotspot" style="top: 10%; left: 32%;" data-info="Alimentação e Mistura: Entrada de farinhas (~10% H2O) e líquidos (Água, Óleo).">?</div>
                         <div class="hotspot" style="top: 42%; left: 45%;" data-info="Tratamento Térmico e Pressão: A massa é cozida entre 120-180°C sob alta pressão (100-150 bars).">?</div>
@@ -374,7 +606,7 @@ class TrainingApp {
         } else if (moduleId === 2) {
             stage.innerHTML = `
                 <div class="sim-m2-interactive">
-                    <img src="assets/diagrama_extrusora.png" class="base-image diagram-bg" style="width:100%;object-fit:contain;" alt="Diagrama técnico de extrusora">
+                                <img src="/courses/formar-opencode/assets/diagrama_extrusora.png" class="base-image diagram-bg" style="width:100%;object-fit:contain;" alt="Diagrama técnico de extrusora">
                     <div class="hotspots-overlay">
                         <div class="hotspot" style="top: 15%; left: 12%;" data-info="Alimentador: Sistema de dosagem de sólidos e líquidos. Pode ser gravimétrico (perda de peso) ou volumétrico para fluxo preciso.">?</div>
                         <div class="hotspot" style="top: 30%; left: 28%;" data-info="Pré-condicionador: Hidrata e pré-aquece a farinha usando vapor. Aumenta a capacidade de produção e melhora a qualidade.">?</div>
@@ -429,10 +661,11 @@ class TrainingApp {
     renderQuizModule(module) {
         // Set up the quiz session with a randomized subset of 5 questions
         console.log(`Rendering quiz for module ${module.id}.`);
+        // Use all questions for the quiz, not just a subset
         const questionsCopy = JSON.parse(JSON.stringify(module.quiz.questions));
         this.shuffleArray(questionsCopy);
 
-        this.quizSession = questionsCopy.slice(0, 5).map(q => {
+        this.quizSession = questionsCopy.map(q => {
             const correctText = q.options[q.correctIndex];
             this.shuffleArray(q.options);
             q.correctIndex = q.options.indexOf(correctText);

@@ -34,7 +34,7 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ### Variáveis de Ambiente (.env.local)
 ```env
-GEMINI_API_KEY=AIzaSyA13YAyvZ9pzss8MBVakJ_3NzJ572D60qs
+GEMINI_API_KEY=SUA_CHAVE_AQUI
 ```
 
 ## Base de Dados Supabase

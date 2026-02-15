@@ -9,6 +9,31 @@ interface AuthProps {
 }
 
 const Auth: React.FC<AuthProps> = ({ onLogin }) => {
+  // Auto-login for testing purposes
+  // Auto-login for testing purposes
+  /*
+  React.useEffect(() => {
+    const autoLogin = async () => {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: 'test@example.com',
+        password: 'password',
+      });
+      if (data.user) {
+        onLogin({
+          id: data.user.id,
+          name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'Utilizador',
+          email: data.user.email || '',
+          role: data.user.user_metadata?.role || 'student',
+          avatar: data.user.user_metadata?.avatar_url || `https://i.pravatar.cc/150?u=${data.user.id}`
+        });
+      } else if (error) {
+        console.error('Auto-login error:', error.message);
+      }
+    };
+    autoLogin();
+  }, []);
+  */
+
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -46,8 +71,13 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
           password
         });
 
-        if (signInError) throw signInError;
+        if (signInError) {
+          console.error('Sign-in error:', signInError.message); // Log error to terminal
+          setError(signInError.message); // Display error in UI
+          throw signInError;
+        }
         
+
         if (data.user) {
           const user: User = {
             id: data.user.id,
@@ -56,12 +86,12 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
             role: data.user.user_metadata?.role || 'student',
             avatar: data.user.user_metadata?.avatar_url || `https://i.pravatar.cc/150?u=${data.user.id}`
           };
-          onLogin(user);
+          onLogin(user); // Call onLogin with the authenticated user
         }
       }
     } catch (err: any) {
-      console.error('Auth error:', err);
-      setError(err.message || 'Ocorreu um erro durante a autenticação.');
+      console.error('Auth error:', err); // Log general auth error to terminal
+      setError(err.message || 'Ocorreu um erro durante a autenticação.'); // Display general error in UI
     } finally {
       setIsAuthenticating(false);
     }
@@ -147,12 +177,14 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Palavra-passe</label>
               <div className="relative">
                 <input 
-                  type={passwordVisible ? "text" : "password"} 
-                  required 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
-                  className="w-full px-6 py-4 pr-12 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all" 
-                  placeholder="••••••••" 
+                  type={passwordVisible ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                  className="w-full px-6 py-4 pr-12 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                  placeholder="••••••••"
                 />
                 <button 
                   type="button"

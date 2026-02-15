@@ -129,7 +129,62 @@ export const courseData = {
                 ],
                 failRedirectId: 1
             },
-            status: "pending"
+            status: "pending",
+            interactive: {
+                type: "simulator",
+                title: "Simulador de Parâmetros Básicos",
+                description: "Explore como os parâmetros básicos afetam o processo de extrusão.",
+                params: [
+                    { id: "sme", name: "SME (Wh/kg)", min: 50, max: 200, default: 120, unit: "Wh/kg" },
+                    { id: "temp", name: "Temperatura", min: 100, max: 200, default: 140, unit: "°C" },
+                    { id: "humidity", name: "Humidade", min: 10, max: 25, default: 15, unit: "%" }
+                ],
+                thresholds: {
+                    optimal: { sme: [100, 150], temp: [130, 170], humidity: [12, 18] },
+                    warning: { sme: [80, 180], temp: [110, 190], humidity: [10, 20] }
+                },
+                feedback: {
+                    lowExpansion: "Expansão baixa: Aumente SME ou Temperatura, ou reduza Humidade.",
+                    highExpansion: "Expansão alta: Reduza SME ou Temperatura, ou aumente Humidade.",
+                    optimal: "Parâmetros básicos na faixa ótima.",
+                    lowTemp: "Temperatura baixa: Pode haver gelatinização incompleta.",
+                    highTemp: "Temperatura alta: Risco de degradação do produto.",
+                    lowSME: "SME baixo: Mistura e cozimento insuficientes.",
+                    highSME: "SME alto: Risco de danos ao produto ou equipamento."
+                }
+            },
+            troubleshooting: {
+                title: "Exercício: Identificação de Problemas Básicos",
+                description: "Relacione os sintomas com as causas e soluções mais prováveis.",
+                scenarios: [
+                    {
+                        id: 1,
+                        name: "Cenário 1: Produto com Baixa Expansão",
+                        symptoms: ["Produto denso e pesado", "Estrutura pouco porosa"],
+                        correctCause: "SME insuficiente",
+                        correctSolution: "Aumentar a velocidade da rosca ou a temperatura do barril.",
+                        options: [
+                            { cause: "SME insuficiente", solution: "Aumentar a velocidade da rosca ou a temperatura do barril." },
+                            { cause: "Temperatura excessiva", solution: "Reduzir a temperatura do barril." },
+                            { cause: "Humidade muito baixa", solution: "Aumentar a humidade da alimentação." },
+                            { cause: "Roscas desgastadas", solution: "Inspecionar e substituir roscas." }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "Cenário 2: Produto com Sabor Queimado",
+                        symptoms: ["Odor e sabor de queimado", "Cor escura"],
+                        correctCause: "Temperatura excessiva",
+                        correctSolution: "Reduzir a temperatura do barril e/ou a velocidade da rosca.",
+                        options: [
+                            { cause: "Temperatura excessiva", solution: "Reduzir a temperatura do barril e/ou a velocidade da rosca." },
+                            { cause: "Humidade muito alta", solution: "Reduzir a humidade da alimentação." },
+                            { cause: "SME muito baixo", solution: "Aumentar a velocidade da rosca." },
+                            { cause: "Limpeza inadequada", solution: "Realizar limpeza profunda do extrusor." }
+                        ]
+                    }
+                ]
+            }
         },
         {
             id: 2,
@@ -566,7 +621,60 @@ export const courseData = {
                 ],
                 failRedirectId: 4
             },
-            status: "locked"
+            status: "locked",
+            interactive: {
+                type: "simulator",
+                title: "Simulador de Qualidade de Cereais",
+                description: "Ajuste os parâmetros para otimizar a expansão e textura dos cereais.",
+                params: [
+                    { id: "sme", name: "SME (Wh/kg)", min: 100, max: 300, default: 200, unit: "Wh/kg" },
+                    { id: "humidity", name: "Humidade (%) ", min: 10, max: 20, default: 14, unit: "%" },
+                    { id: "dieTemp", name: "Temperatura Die (°C)", min: 120, max: 180, default: 150, unit: "°C" }
+                ],
+                thresholds: {
+                    optimal: { sme: [180, 250], humidity: [12, 16], dieTemp: [140, 160] },
+                    warning: { sme: [150, 280], humidity: [10, 18], dieTemp: [130, 170] }
+                },
+                feedback: {
+                    lowExpansion: "Baixa expansão: Aumente SME e temperatura, reduza humidade.",
+                    highExpansion: "Alta expansão: Reduza SME e temperatura, aumente humidade.",
+                    optimal: "Qualidade ideal de cereais expandidos.",
+                    denseProduct: "Produto denso: Aumente o SME.",
+                    stickyProduct: "Produto pegajoso: Reduza a humidade ou aumente a temperatura."
+                }
+            },
+            troubleshooting: {
+                title: "Exercício: Problemas em Cereais Expandidos",
+                description: "Analise os sintomas e encontre as soluções para a produção de cereais.",
+                scenarios: [
+                    {
+                        id: 1,
+                        name: "Cenário 1: Cereal Pouco Crocante",
+                        symptoms: ["Textura suave, pouco crocante", "Absorve muito leite rapidamente"],
+                        correctCause: "Baixa expansão / Densidade alta",
+                        correctSolution: "Aumentar SME e/ou temperatura no die; reduzir humidade da massa.",
+                        options: [
+                            { cause: "Baixa expansão / Densidade alta", solution: "Aumentar SME e/ou temperatura no die; reduzir humidade da massa." },
+                            { cause: "Super-expansão", solution: "Reduzir SME ou temperatura." },
+                            { cause: "Contaminação por óleo", solution: "Verificar sistema de lubrificação do extrusor." },
+                            { cause: "Corte irregular", solution: "Ajustar lâminas do cortador." }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "Cenário 2: Cereal Quebradiço e Frágil",
+                        symptoms: ["Produto esfarela-se facilmente", "Formato irregular"],
+                        correctCause: "Expansão excessiva ou cozimento excessivo",
+                        correctSolution: "Reduzir SME ou temperatura; aumentar ligeiramente a humidade.",
+                        options: [
+                            { cause: "Expansão excessiva ou cozimento excessivo", solution: "Reduzir SME ou temperatura; aumentar ligeiramente a humidade." },
+                            { cause: "Sub-expansão", solution: "Aumentar SME ou temperatura." },
+                            { cause: "Falta de aditivos ligantes", solution: "Ajustar formulação da receita." },
+                            { cause: "Problemas no arrefecimento", solution: "Verificar controlo de temperatura no pós-extrusão." }
+                        ]
+                    }
+                ]
+            }
         }
     ]
 };

@@ -156,6 +156,10 @@ body {
     padding: 2.5rem;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
+    display: flex; /* Added for centering */
+    flex-direction: column; /* Added for centering */
+    justify-content: center; /* Added for centering */
+    flex-grow: 1; /* Allow to take available space */
 }
 
 .question-text {
@@ -249,7 +253,7 @@ body {
     text-align: right;
 }
 
-.slide-card {
+.slide-card, .simulator-container, .troubleshooting-container {
     flex-grow: 1;
     background: var(--bg-card);
     backdrop-filter: blur(15px);
@@ -279,7 +283,7 @@ body {
     color: var(--text-main);
 }
 
-.slide-actions {
+.slide-actions, .simulator-actions, .troubleshooting-actions, .quiz-actions {
     display: flex;
     justify-content: space-between;
     margin-top: 2rem;
@@ -368,6 +372,21 @@ body {
 }
 
 /* Interactive Simulation Styling */
+.simulator-header p {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.param-item label {
+    font-size: 1.25rem;
+}
+
+.simulator-feedback p {
+    font-size: 1.25rem;
+}
+.troubleshooting-header p, .scenario-card p, .troubleshooting-option label {
+    font-size: 1.25rem;
+}
 .sim-m1-interactive, .sim-m2-interactive, 
 .dynamics-m1-interactive, .dynamics-m2-interactive,
 .dynamics-m3-interactive, .dynamics-m4-interactive {

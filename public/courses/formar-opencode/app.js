@@ -457,8 +457,8 @@ class TrainingApp {
                     <p class="info">Ajuste os parâmetros para otimizar o processo.</p>
                 </div>
                 <div class="simulator-actions">
-                    <button id="backToVisuals" class="btn btn-secondary">Anterior (Visualização)</button>
-                    <button id="startTroubleshooting" class="btn btn-primary">Continuar para Troubleshooting</button>
+                    <button id="prevSim" class="btn btn-secondary">Anterior</button>
+                    <button id="nextSim" class="btn btn-primary">Avançar</button>
                 </div>
             </div>
         `;
@@ -473,8 +473,14 @@ class TrainingApp {
             };
         });
 
-        document.getElementById('backToVisuals').onclick = () => this.renderTechnicalVideo(module);
-        document.getElementById('startTroubleshooting').onclick = () => this.renderTroubleshooting(module);
+        document.getElementById('prevSim').onclick = () => this.renderTechnicalVideo(module);
+        document.getElementById('nextSim').onclick = () => {
+            if (module.troubleshooting) {
+                this.renderTroubleshooting(module);
+            } else {
+                this.renderQuizModule(module); // Fallback to quiz if troubleshooting is missing
+            }
+        };
 
         updateSimulatorUI(); // Initial UI update
 
@@ -558,9 +564,23 @@ class TrainingApp {
                     }
                 };
             };
+
+            document.getElementById('prevTroubleshooting').onclick = () => {
+                // Logic to go back to the previous view (dynamics visualization or simulator)
+                if (module.interactive && module.interactive.type === 'simulator') {
+                    this.renderSimulator(module);
+                } else {
+                    this.renderDynamicsVisualization(module);
+                }
+            };
+
+            document.getElementById('nextTroubleshooting').onclick = () => {
+                this.renderQuizModule(module);
+            };
         };
 
         showScenario(currentScenarioIndex);
+
     }
 
     handleTroubleshootingResult(module, correctCount, totalScenarios) {
@@ -692,13 +712,19 @@ class TrainingApp {
                         </div>
                         <button id="nextQuestionBtn" class="btn btn-primary">Continuar</button>
                     </div>
+                    <div class="quiz-actions">
+                        <button id="prevQuiz" class="btn btn-secondary">Anterior</button>
+                        <button id="nextQuiz" class="btn btn-primary">Avançar</button>
+                    </div>
                 </div>
             `;
 
             const optionsGrid = document.getElementById('optionsGrid');
             const feedbackBox = document.getElementById('quizFeedback');
             const feedbackText = document.getElementById('feedbackText');
-            const nextBtn = document.getElementById('nextQuestionBtn');
+            const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+            const prevQuizBtn = document.getElementById('prevQuiz');
+            const nextQuizBtn = document.getElementById('nextQuiz');
 
             this.contentArea.querySelectorAll('.option-btn').forEach(btn => {
                 btn.onclick = () => {
@@ -722,12 +748,40 @@ class TrainingApp {
                     // Show feedback and next button
                     feedbackBox.style.display = 'block';
 
-                    nextBtn.onclick = () => {
+                    nextQuestionBtn.onclick = () => {
                         if (qIndex + 1 < this.quizSession.length) showQuestion(qIndex + 1);
                         else this.handleQuizResult(module, score);
                     };
                 };
             });
+
+            if (prevQuizBtn) {
+                prevQuizBtn.onclick = () => {
+                    if (qIndex > 0) {
+                        showQuestion(qIndex - 1);
+                    } else {
+                        // Go back to troubleshooting if it exists for this module, otherwise go to previous module
+                        if (module.troubleshooting) {
+                            this.renderTroubleshooting(module);
+                        } else if (module.interactive && module.interactive.type === 'simulator') {
+                            this.renderSimulator(module);
+                        } else {
+                            this.navigate(-1); // Fallback to previous module if no interactive elements
+                        }
+                    }
+
+                };
+            }
+
+            if (nextQuizBtn) {
+                nextQuizBtn.onclick = () => {
+                    if (qIndex + 1 < this.quizSession.length) {
+                        showQuestion(qIndex + 1);
+                    } else {
+                        this.navigate(1); // Go to next module
+                    }
+                };
+            }
         };
         showQuestion(0);
     }
